@@ -1,11 +1,15 @@
 package com.brageast.project.webmessage.entity.table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +31,7 @@ public class UserTable implements UserDetails {
     private String password;
     @Column(nullable = false)
     private String email;
-//    @Builder.Default
+    //    @Builder.Default
 //    @Column(name = "account_non_expired", nullable = false)
 //    private boolean accountNonExpired = true;
 //    @Builder.Default
@@ -47,30 +51,46 @@ public class UserTable implements UserDetails {
     private Date updateTime;
     /**
      * 用户相关角色权限列表
+     *
      * @see AuthorityTable
      */
-    @OneToMany
+    @OneToMany/*(targetEntity = AuthorityTable.class)*/
+    @JoinColumn(
+            name = "user_id",
+            referencedColumnName = "id",
+            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT),
+            insertable = false,
+            updatable = false,
+            nullable = false
+    )
+    @JsonIgnore
     @ToString.Exclude
-    @JoinColumn(name = "user_id", referencedColumnName = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), nullable = false)
-    private transient List<AuthorityTable> authorities;
+    private List<AuthorityTable> authorityTables;
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        //noinspection unchecked
+        return getAuthorityTables() == null ? Collections.EMPTY_LIST : getAuthorityTables();
+    }
 
     @Override
     public boolean isAccountNonExpired() {
-        return enabled != null ? enabled : false;
+        return getEnabled() != null ? getEnabled() : false;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return enabled != null ? enabled : false;
+        return getEnabled() != null ? getEnabled() : false;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return enabled != null ? enabled : false;
+        return getEnabled() != null ? getEnabled() : false;
     }
 
     @Override
     public boolean isEnabled() {
-        return enabled != null ? enabled : false;
+        return getEnabled() != null ? getEnabled() : false;
     }
 }

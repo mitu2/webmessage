@@ -29,7 +29,7 @@ public class CustomizeUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        final UserTable userTable = userRepository.findByUsernameEquals(username);
+        final UserTable userTable = userRepository.findByUsername(username);
         if (userTable == null) {
             throw new UsernameNotFoundException("未找到用户" + username);
         }

@@ -1,12 +1,26 @@
 package com.brageast.project.webmessage.exception;
 
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import com.brageast.project.webmessage.entity.ResponseMessage;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 
-//@ControllerAdvice(basePackages = "com.brageast.project.webmessage.controller")
-public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
-//
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public
+@RestControllerAdvice(basePackages = "com.brageast.project.webmessage.controller")
+public class ControllerExceptionHandler {
+
+    @ExceptionHandler({UserExistedException.class, UserNotFoundException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleMethodArgumentNotValidException(Exception err/*, WebRequest webRequest*/) {
+        return ResponseEntity
+                .badRequest()
+                .body(ResponseMessage
+                        .of(HttpStatus.BAD_REQUEST)
+                        .data(err.getMessage())
+                        .build()
+                );
+    }
 
 }

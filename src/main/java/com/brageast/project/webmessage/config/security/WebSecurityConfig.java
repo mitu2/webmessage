@@ -12,10 +12,14 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.*;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
@@ -32,6 +36,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final DataSource dataSource;
 
     private final UserDetailsService userDetailsService;
+
+    private final CheckTokenFilter checkTokenFilter;
 
     @Bean
     PersistentTokenRepository persistentTokenRepository() {
@@ -72,19 +78,30 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/login", "/register", "/logout").permitAll()
-                .antMatchers(HttpMethod.POST, "/login", "/api/user/register").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .rememberMe()
-                .tokenRepository(persistentTokenRepository())
-                .tokenValiditySeconds(60 * 60 * 24)
-                .userDetailsService(userDetailsService)
-                .and()
-                .csrf()
-                .disable();
+        http.authorizeRequests(ar -> {
+            ar.antMatchers(HttpMethod.GET, "/login", "/register", "/logout").permitAll()
+                    .antMatchers(HttpMethod.POST, "/login", "/api/user/register").permitAll()
+                    .anyRequest().authenticated();
+        });
 
+        http.sessionManagement(sm -> {
+            // 默认不创建Session
+            sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        });
+
+        http.rememberMe(rm -> {
+            rm.tokenRepository(persistentTokenRepository())
+                    .tokenValiditySeconds(60 * 60 * 24)
+                    .userDetailsService(userDetailsService);
+        });
+
+        http.csrf(AbstractHttpConfigurer::disable);
+
+        // 禁用请求头缓存
+        http.headers(HeadersConfigurer::cacheControl);
+
+        // 过滤器
+        http.addFilterBefore(checkTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
 }

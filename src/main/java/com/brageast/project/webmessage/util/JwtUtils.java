@@ -1,0 +1,68 @@
+package com.brageast.project.webmessage.util;
+
+import com.brageast.project.webmessage.entity.table.UserTable;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.time.Instant;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+public class JwtUtils {
+
+    /**
+     * token 过期时间, 单位: 秒. 这个值表示 30 天
+     */
+    private static final long TOKEN_EXPIRED_TIME = TimeUnit.DAYS.toMillis(30);
+
+    public static final Key SIGN_KEY = Keys.hmacShaKeyFor("C292E9833E772C31EE51C0686FFDDA34".getBytes(StandardCharsets.UTF_8));
+    private static final Gson gson = new GsonBuilder().create();
+
+
+    private JwtUtils() {
+
+    }
+
+    public static String buildToken(UserTable userTable) {
+        return buildToken(userTable, TOKEN_EXPIRED_TIME);
+    }
+
+    public static String buildToken(UserTable userTable, long time) {
+        final Map<String, String> map = Collections.singletonMap("username", userTable.getUsername());
+        final JwtBuilder jwtBuilder = Jwts.builder()
+                .setSubject(gson.toJson(map))
+                .signWith(SIGN_KEY)
+                .setIssuedAt(Date.from(Instant.now()));
+        if (time > 0) {
+            final Calendar instance = Calendar.getInstance();
+//            instance.add(Calendar.MILLISECOND, time);
+            instance.setTimeInMillis(instance.getTimeInMillis() + time);
+            final Date exp = instance.getTime();
+            jwtBuilder.setExpiration(exp);
+        }
+        return jwtBuilder.compact();
+    }
+
+    public static String getUsername(String token) throws Exception {
+        try {
+            final Jwt parse = Jwts.parserBuilder()
+                    .setSigningKey(SIGN_KEY)
+                    .build()
+                    .parse(token);
+            final JsonElement element = gson.fromJson(parse.getBody().toString(), JsonElement.class);
+            return element.getAsJsonObject().get("sub").getAsJsonObject().get("username").getAsString();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+}
