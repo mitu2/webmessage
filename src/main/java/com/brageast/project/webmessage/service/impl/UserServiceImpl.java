@@ -4,14 +4,19 @@ import com.brageast.project.webmessage.db.repository.UserRepository;
 import com.brageast.project.webmessage.entity.User;
 import com.brageast.project.webmessage.entity.table.UserTable;
 import com.brageast.project.webmessage.exception.UserExistedException;
+import com.brageast.project.webmessage.exception.UserLoginFailedException;
 import com.brageast.project.webmessage.exception.UserNotFoundException;
 import com.brageast.project.webmessage.service.UserService;
+import com.brageast.project.webmessage.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -20,11 +25,12 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-//    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final Converter<User, UserTable> userUserTableConvert;
 
     /**
      * 添加一个用户
+     *
      * @param user 用户信息
      * @return user添加成功信息
      */
@@ -68,6 +74,25 @@ public class UserServiceImpl implements UserService {
             throw new UserExistedException("未找到用户, 用户名:" + username);
         }
         return userTable;
+    }
+
+    /**
+     * 用户尝试登录相关操作
+     *
+     * @param user 用户账户密码信息
+     * @return 生成token
+     * @throws UserLoginFailedException 用户登录失败
+     */
+    @Override
+    public String doLogin(User user) throws UserLoginFailedException {
+        Objects.requireNonNull(user, "user字段不能为空!");
+        final UserTable userTable = findUser(user.getUsername());
+        if (passwordEncoder.matches(user.getPassword(), userTable.getPassword())) {
+            return JwtUtils.buildToken(userTable);
+        }
+        else {
+            throw new UserLoginFailedException("用户" + user.getUsername() + "登录失败, 密码错误!");
+        }
     }
 
 }

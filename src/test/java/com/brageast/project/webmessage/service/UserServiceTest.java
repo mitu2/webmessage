@@ -4,10 +4,14 @@ import com.brageast.project.webmessage.db.repository.AuthorityRepository;
 import com.brageast.project.webmessage.entity.User;
 import com.brageast.project.webmessage.entity.table.AuthorityTable;
 import com.brageast.project.webmessage.entity.table.UserTable;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,15 +24,25 @@ class UserServiceTest {
     @Autowired
     private AuthorityRepository authorityRepository;
 
-    @Transactional
+    @Autowired
+    private EntityManager manager;
+
     @Test
+    @Transactional
     void addUser() {
+        final AuthorityTable base = authorityRepository.save(new AuthorityTable(1, "base"));
+        System.out.println(base);
         final UserTable userTable = userService.addUser(new User("admin", "admin", "admin@admin.com"));
         System.out.println(userTable);
-        final AuthorityTable base = authorityRepository.saveAndFlush(new AuthorityTable(userTable.getId(), "base"));
-        System.out.println(base);
-
+        manager.getTransaction().commit();
         final UserTable user = userService.findUser(userTable.getId());
+        System.out.println(user.getAuthorityTables());
+    }
+
+    @Transactional
+    @Test
+    void findUser() {
+        final UserTable user = userService.findUser(1);
         System.out.println(user.getAuthorityTables());
     }
 }

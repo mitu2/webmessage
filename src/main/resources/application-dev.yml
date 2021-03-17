@@ -2,3 +2,6 @@ server:
   port: 8080
   compression:
     enabled: false
+logging:
+  level:
+    com.brageast.project.webmessage: DEBUG

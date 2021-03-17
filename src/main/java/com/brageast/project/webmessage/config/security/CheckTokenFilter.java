@@ -3,10 +3,13 @@ package com.brageast.project.webmessage.config.security;
 import com.brageast.project.webmessage.entity.table.UserTable;
 import com.brageast.project.webmessage.service.UserService;
 import com.brageast.project.webmessage.util.JwtUtils;
-import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -18,6 +21,8 @@ import java.io.IOException;
 
 @Component
 public class CheckTokenFilter extends OncePerRequestFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(CheckTokenFilter.class);
 
     /**
      * Token请求头名称
@@ -45,23 +50,32 @@ public class CheckTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader(TOKEN_HEADER);
-        if (token != null && token.startsWith(TOKEN_PREFIX) && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (token != null && token.startsWith(TOKEN_PREFIX) && isNotLogin()) {
             token = token.replaceFirst(TOKEN_PREFIX, "").replace(" ", "");
             try {
                 final String username = JwtUtils.getUsername(token);
                 final UserTable user = userService.findUser(username);
                 if (user != null) {
-                    // TODO BUG
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    if (log.isDebugEnabled()) {
+                        log.debug("用户{}校验成功!", username);
+                    }
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                if (log.isDebugEnabled()) {
+                    log.debug(e.getMessage(), e);
+                }
             }
         }
         filterChain.doFilter(request, response);
     }
 
+    private boolean isNotLogin() {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication == null || !authentication.isAuthenticated();
+    }
 
 }

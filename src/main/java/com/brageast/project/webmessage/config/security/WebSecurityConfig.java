@@ -29,7 +29,7 @@ import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -79,9 +79,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests(ar -> {
-            ar.antMatchers(HttpMethod.GET, "/login", "/register", "/logout").permitAll()
-                    .antMatchers(HttpMethod.POST, "/login", "/api/user/register").permitAll()
-                    .anyRequest().authenticated();
+            ar.antMatchers(HttpMethod.GET, "/login", "/register", "/logout", "/user/**")
+                    .permitAll()
+                    .antMatchers(HttpMethod.POST, "/login", "/register")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated();
         });
 
         http.sessionManagement(sm -> {

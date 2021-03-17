@@ -7,8 +7,18 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepositoryImplementation<UserTable, Integer> {
 
+    /**
+     * 查找用户是否存在
+     * @param username 用户名
+     * @return 是否存在用户
+     */
     boolean existsByUsername(String username);
 
+    /**
+     * 根据用户名查找用户
+     * @param username 用户名
+     * @return 用户信息
+     */
     UserTable findByUsername(String username);
 
 }

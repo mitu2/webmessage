@@ -26,6 +26,4 @@ public class AuthorityTable implements GrantedAuthority {
     @Column(nullable = false)
     private String authority;
 
-
-
 }

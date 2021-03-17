@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -27,6 +28,7 @@ public class UserTable implements UserDetails {
     private Integer id;
     @Column(nullable = false, length = 20, unique = true)
     private String username;
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
@@ -54,19 +56,17 @@ public class UserTable implements UserDetails {
      *
      * @see AuthorityTable
      */
-    @OneToMany/*(targetEntity = AuthorityTable.class)*/
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(
             name = "user_id",
             referencedColumnName = "id",
             foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT),
             insertable = false,
-            updatable = false,
-            nullable = false
+            updatable = false
     )
     @JsonIgnore
     @ToString.Exclude
     private List<AuthorityTable> authorityTables;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -6,12 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 
 @RestControllerAdvice(basePackages = "com.brageast.project.webmessage.controller")
 public class ControllerExceptionHandler {
 
-    @ExceptionHandler({UserExistedException.class, UserNotFoundException.class})
+    @ExceptionHandler({UserExistedException.class, UserNotFoundException.class, UserLoginFailedException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleMethodArgumentNotValidException(Exception err/*, WebRequest webRequest*/) {
         return ResponseEntity
