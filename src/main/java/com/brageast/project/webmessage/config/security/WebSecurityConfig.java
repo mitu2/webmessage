@@ -39,13 +39,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CheckTokenFilter checkTokenFilter;
 
-    @Bean
-    PersistentTokenRepository persistentTokenRepository() {
-        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
-        tokenRepository.setDataSource(dataSource);
+//    @Bean
+//    PersistentTokenRepository persistentTokenRepository() {
+//        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+//        tokenRepository.setDataSource(dataSource);
 //        tokenRepository.setCreateTableOnStartup(true);
-        return tokenRepository;
-    }
+//        return tokenRepository;
+//    }
 
     @Bean
     public Converter<User, UserTable> userUserTableConvert() {
@@ -92,11 +92,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         });
 
-        http.rememberMe(rm -> {
-            rm.tokenRepository(persistentTokenRepository())
-                    .tokenValiditySeconds(60 * 60 * 24)
-                    .userDetailsService(userDetailsService);
-        });
+//        http.rememberMe(rm -> {
+//            rm.tokenRepository(persistentTokenRepository())
+//                    .tokenValiditySeconds(60 * 60 * 24)
+//                    .userDetailsService(userDetailsService);
+//        });
 
         http.csrf(AbstractHttpConfigurer::disable);
 

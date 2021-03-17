@@ -47,4 +47,9 @@ public class LoginController {
                 .build();
     }
 
+    @GetMapping("login")
+    String loginHtml() {
+        return "login";
+    }
+
 }

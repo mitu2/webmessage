@@ -70,6 +70,7 @@ public class CheckTokenFilter extends OncePerRequestFilter {
                 }
             }
         }
+//        response.sendRedirect("/login");
         filterChain.doFilter(request, response);
     }
 
