@@ -26,7 +26,7 @@ public interface UserService {
      * @return 用户信息
      * @throws UserNotFoundException 如果未找到抛出异常
      */
-    UserTable findUser(Integer id) throws UserNotFoundException;
+    UserTable findUser(Long id) throws UserNotFoundException;
 
     /**
      * 根据用户名查找用户

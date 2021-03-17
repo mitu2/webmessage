@@ -6,7 +6,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -25,7 +24,7 @@ public class UserTable implements UserDetails {
     @Id
     @Column(nullable = false, insertable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Column(nullable = false, length = 20, unique = true)
     private String username;
     @JsonIgnore

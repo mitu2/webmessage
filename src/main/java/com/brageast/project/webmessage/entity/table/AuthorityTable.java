@@ -18,10 +18,10 @@ public class AuthorityTable implements GrantedAuthority {
     @Id
     @Column(name = "authority_id", nullable = false, insertable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @NonNull
     @Column(name = "user_id", nullable = false)
-    private Integer userId;
+    private Long userId;
     @NonNull
     @Column(nullable = false)
     private String authority;

@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
      * @throws UserNotFoundException 如果未找到抛出异常
      */
     @Override
-    public UserTable findUser(Integer id) throws UserNotFoundException {
+    public UserTable findUser(Long id) throws UserNotFoundException {
         final Optional<UserTable> userTable = userRepository.findById(id);
         return userTable.orElseThrow(() -> new UserNotFoundException("未找到用户, id:" + id));
     }

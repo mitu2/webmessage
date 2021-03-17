@@ -1,10 +1,9 @@
 package com.brageast.project.webmessage.db.repository;
 
 import com.brageast.project.webmessage.entity.table.AuthorityTable;
-import com.brageast.project.webmessage.entity.table.UserTable;
 import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-@Repository
-public interface AuthorityRepository extends JpaRepositoryImplementation<AuthorityTable, Integer> {
+@RepositoryRestResource(path = "authority")
+public interface AuthorityRepository extends JpaRepositoryImplementation<AuthorityTable, Long> {
 }

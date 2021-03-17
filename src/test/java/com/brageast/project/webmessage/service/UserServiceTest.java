@@ -30,7 +30,7 @@ class UserServiceTest {
     @Test
     @Transactional
     void addUser() {
-        final AuthorityTable base = authorityRepository.save(new AuthorityTable(1, "base"));
+        final AuthorityTable base = authorityRepository.save(new AuthorityTable(1L, "base"));
         System.out.println(base);
         final UserTable userTable = userService.addUser(new User("admin", "admin", "admin@admin.com"));
         System.out.println(userTable);
@@ -42,7 +42,7 @@ class UserServiceTest {
     @Transactional
     @Test
     void findUser() {
-        final UserTable user = userService.findUser(1);
+        final UserTable user = userService.findUser(1L);
         System.out.println(user.getAuthorityTables());
     }
 }

@@ -13,3 +13,6 @@ spring:
     open-in-view: true
     hibernate:
       ddl-auto: update
+  data:
+    rest:
+      base-path: rest
