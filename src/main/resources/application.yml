@@ -16,3 +16,5 @@ spring:
   data:
     rest:
       base-path: rest
+  mvc:
+    static-path-pattern: /static/**
