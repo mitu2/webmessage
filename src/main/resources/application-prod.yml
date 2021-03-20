@@ -8,7 +8,7 @@ server:
 spring:
   thymeleaf:
     cache: true
-#  jpa:
-#    show-sql: true
+  jpa:
+    show-sql: false
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

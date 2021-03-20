@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<button onclick="linkWs()">
+    链接
+</button>
+
+<script>
+    let ws;
+    function linkWs() {
+        if (ws) {
+            ws.close()
+        }
+        ws = new WebSocket("ws://localhost:8080//websocket");
+        ws.onopen((_, __) => {
+            console.log("连接成功")
+        })
+    }
+</script>
+</body>
+</html>

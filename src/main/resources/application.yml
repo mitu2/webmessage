@@ -4,7 +4,6 @@ spring:
   profiles:
     active: dev
   thymeleaf:
-    cache: true
     prefix: classpath:/templates/
     suffix: .html
     enabled: true
