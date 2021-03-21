@@ -1,6 +1,6 @@
 package com.brageast.project.webmessage.db.repository;
 
-import com.brageast.project.webmessage.entity.table.UserTable;
+import com.brageast.project.webmessage.pojo.table.UserTable;
 import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 

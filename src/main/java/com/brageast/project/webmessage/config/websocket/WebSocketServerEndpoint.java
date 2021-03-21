@@ -1,16 +1,18 @@
 package com.brageast.project.webmessage.config.websocket;
 
-import com.brageast.project.webmessage.entity.Message;
+import com.brageast.project.webmessage.constant.MessageType;
+import com.brageast.project.webmessage.pojo.Message;
+import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.util.WebSocketUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -26,23 +28,39 @@ public class WebSocketServerEndpoint {
 
     @OnOpen
     public void onOpen(Session session) {
-        log.info(session.getUserPrincipal().toString());
+
     }
 
     @OnClose
-    public void OnClose(Session session) {
-        log.info(session.getUserPrincipal().toString());
+    public void onClose(Session session) {
     }
 
     @OnError
     public void onError(Session session, Throwable throwable) {
-        log.info(session.getUserPrincipal().toString());
+
     }
 
     @OnMessage
     public void onMessage(Session session, String text) {
         try {
             final Message message = mapper.readValue(text, Message.class);
+            final UserTable user = message.getUser();
+            if (user == null) {
+                WebSocketUtils.sendObject(session, Message
+                        .builder()
+                        .data("请指定发送用户")
+                        .type(MessageType.ERROR)
+                        .build()
+                );
+                return;
+            }
+            final Message toMessage = message.to(WebSocketUtils.getUserTable(session));
+            for (Session openSession : session.getOpenSessions()) {
+                final UserTable userTable = WebSocketUtils.getUserTable(openSession);
+                if (userTable != null || openSession == session && Objects.equals(userTable.getId(), user.getId())) {
+                    WebSocketUtils.sendObject(openSession, toMessage);
+                }
+            }
         } catch (JsonProcessingException e) {
 //            session.getBasicRemote().sendText(Message.builder());
         }

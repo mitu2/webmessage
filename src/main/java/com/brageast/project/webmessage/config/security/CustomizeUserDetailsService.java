@@ -1,7 +1,7 @@
 package com.brageast.project.webmessage.config.security;
 
 import com.brageast.project.webmessage.db.repository.UserRepository;
-import com.brageast.project.webmessage.entity.table.UserTable;
+import com.brageast.project.webmessage.pojo.table.UserTable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

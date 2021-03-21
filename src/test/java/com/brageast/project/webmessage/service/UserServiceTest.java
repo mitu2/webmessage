@@ -1,19 +1,15 @@
 package com.brageast.project.webmessage.service;
 
 import com.brageast.project.webmessage.db.repository.AuthorityRepository;
-import com.brageast.project.webmessage.entity.User;
-import com.brageast.project.webmessage.entity.table.AuthorityTable;
-import com.brageast.project.webmessage.entity.table.UserTable;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import com.brageast.project.webmessage.pojo.User;
+import com.brageast.project.webmessage.pojo.table.AuthorityTable;
+import com.brageast.project.webmessage.pojo.table.UserTable;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class UserServiceTest {

@@ -1,4 +1,4 @@
-package com.brageast.project.webmessage.entity;
+package com.brageast.project.webmessage.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +24,6 @@ public class ResponseMessage implements Serializable {
     private Object data;
     @Builder.Default
     private Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
-
 
     public static ResponseMessageBuilder of(HttpStatus status) {
         return ResponseMessage

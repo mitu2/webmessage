@@ -1,8 +1,8 @@
 package com.brageast.project.webmessage.service.impl;
 
 import com.brageast.project.webmessage.db.repository.UserRepository;
-import com.brageast.project.webmessage.entity.User;
-import com.brageast.project.webmessage.entity.table.UserTable;
+import com.brageast.project.webmessage.pojo.User;
+import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.exception.UserExistedException;
 import com.brageast.project.webmessage.exception.UserLoginFailedException;
 import com.brageast.project.webmessage.exception.UserNotFoundException;
@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;

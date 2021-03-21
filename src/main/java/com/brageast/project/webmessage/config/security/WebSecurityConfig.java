@@ -1,7 +1,7 @@
 package com.brageast.project.webmessage.config.security;
 
-import com.brageast.project.webmessage.entity.User;
-import com.brageast.project.webmessage.entity.table.UserTable;
+import com.brageast.project.webmessage.pojo.User;
+import com.brageast.project.webmessage.pojo.table.UserTable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -20,8 +20,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.*;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import javax.sql.DataSource;
 import java.util.HashMap;

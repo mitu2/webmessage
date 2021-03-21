@@ -1,6 +1,6 @@
 package com.brageast.project.webmessage.controller;
 
-import com.brageast.project.webmessage.entity.table.UserTable;
+import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

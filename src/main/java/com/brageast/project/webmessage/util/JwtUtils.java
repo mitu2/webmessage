@@ -1,6 +1,6 @@
 package com.brageast.project.webmessage.util;
 
-import com.brageast.project.webmessage.entity.table.UserTable;
+import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -54,15 +54,11 @@ public class JwtUtils {
     }
 
     public static String getUsername(String token) throws Exception {
-        try {
-            final Jwt parse = Jwts.parserBuilder()
-                    .setSigningKey(SIGN_KEY)
-                    .build()
-                    .parse(token);
-            final JsonElement element = gson.fromJson(parse.getBody().toString(), JsonElement.class);
-            return element.getAsJsonObject().get("sub").getAsJsonObject().get("username").getAsString();
-        } catch (Exception e) {
-            throw e;
-        }
+        final Jwt parse = Jwts.parserBuilder()
+                .setSigningKey(SIGN_KEY)
+                .build()
+                .parse(token);
+        final JsonElement element = gson.fromJson(parse.getBody().toString(), JsonElement.class);
+        return element.getAsJsonObject().get("sub").getAsJsonObject().get("username").getAsString();
     }
 }

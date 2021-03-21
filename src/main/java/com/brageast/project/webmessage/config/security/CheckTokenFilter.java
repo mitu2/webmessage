@@ -1,6 +1,6 @@
 package com.brageast.project.webmessage.config.security;
 
-import com.brageast.project.webmessage.entity.table.UserTable;
+import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.service.UserService;
 import com.brageast.project.webmessage.util.JwtUtils;
 import org.slf4j.Logger;

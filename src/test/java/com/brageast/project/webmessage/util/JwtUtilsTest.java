@@ -1,6 +1,6 @@
 package com.brageast.project.webmessage.util;
 
-import com.brageast.project.webmessage.entity.table.UserTable;
+import com.brageast.project.webmessage.pojo.table.UserTable;
 import org.junit.jupiter.api.Test;
 
 class JwtUtilsTest {

@@ -1,8 +1,8 @@
 package com.brageast.project.webmessage.controller;
 
-import com.brageast.project.webmessage.entity.ResponseMessage;
-import com.brageast.project.webmessage.entity.User;
-import com.brageast.project.webmessage.entity.table.UserTable;
+import com.brageast.project.webmessage.pojo.ResponseMessage;
+import com.brageast.project.webmessage.pojo.User;
+import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 
 @Controller

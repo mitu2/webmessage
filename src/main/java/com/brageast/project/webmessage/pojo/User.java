@@ -1,4 +1,4 @@
-package com.brageast.project.webmessage.entity;
+package com.brageast.project.webmessage.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

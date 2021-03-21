@@ -1,7 +1,5 @@
 package com.brageast.project.webmessage.constant;
 
-import lombok.ToString;
-
 public enum MessageType {
 
     TEXT,

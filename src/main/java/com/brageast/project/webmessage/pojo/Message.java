@@ -1,6 +1,7 @@
-package com.brageast.project.webmessage.entity;
+package com.brageast.project.webmessage.pojo;
 
 import com.brageast.project.webmessage.constant.MessageType;
+import com.brageast.project.webmessage.pojo.table.UserTable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,22 +16,27 @@ import java.time.LocalDateTime;
 @Builder
 public class Message {
 
-    /**
-     * 发送者
-     */
-    private User from;
-    /**
-     * 接收者
-     */
-    private User to;
+    private UserTable user;
+
     /**
      * 发送消息类型
      */
     @Builder.Default
-    private  MessageType type = MessageType.TEXT;
+    private MessageType type = MessageType.TEXT;
 
     private Object data;
 
     @Builder.Default
     private Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+
+    public Message to(UserTable user) {
+        return Message
+                .builder()
+                .timestamp(timestamp)
+                .type(type)
+                .data(data)
+                .user(user)
+                .build();
+    }
+
 }

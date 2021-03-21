@@ -1,7 +1,7 @@
 package com.brageast.project.webmessage;
 
 import com.brageast.project.webmessage.constant.MessageType;
-import com.brageast.project.webmessage.entity.Message;
+import com.brageast.project.webmessage.pojo.Message;
 import com.brageast.project.webmessage.util.WebSocketUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

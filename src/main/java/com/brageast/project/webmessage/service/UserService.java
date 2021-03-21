@@ -1,7 +1,7 @@
 package com.brageast.project.webmessage.service;
 
-import com.brageast.project.webmessage.entity.User;
-import com.brageast.project.webmessage.entity.table.UserTable;
+import com.brageast.project.webmessage.pojo.User;
+import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.exception.UserExistedException;
 import com.brageast.project.webmessage.exception.UserLoginFailedException;
 import com.brageast.project.webmessage.exception.UserNotFoundException;

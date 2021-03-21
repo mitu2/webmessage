@@ -1,6 +1,6 @@
 package com.brageast.project.webmessage.exception;
 
-import com.brageast.project.webmessage.entity.ResponseMessage;
+import com.brageast.project.webmessage.pojo.ResponseMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
