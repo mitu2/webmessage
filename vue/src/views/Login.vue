@@ -1,48 +1,46 @@
 <template>
   <div class="login">
-    <div>
-      登录
+    <div class="title" style="margin-top: 140px">
+      登录页面
     </div>
     <a-form
         :model="form"
     >
-      <a-form-item>
-        <div>
-          用户名
-        </div>
-        <a-input v-model:value="form.username">
+      <a-form-item class="wm-input">
+        <a-input v-model:value="form.username" placeholder="用户名">
           <template #prefix>
             <UserOutlined style="color: rgba(0, 0, 0, 0.25)"/>
           </template>
         </a-input>
       </a-form-item>
-      <a-form-item>
-        <div>
-          密码
-        </div>
-        <a-input v-model:value="form.password" type="password">
+      <a-form-item class="wm-input">
+        <a-input v-model:value="form.password" type="password" placeholder="密码">
           <template #prefix>
             <LockOutlined style="color: rgba(0, 0, 0, 0.25)"/>
           </template>
         </a-input>
       </a-form-item>
-      <a-form-item>
+      <a-form-item class="wm-input">
+
         <a-button
             type="primary"
             html-type="submit"
             @click="submit"
-            :disabled="form.username === '' || form.password === ''"
         >
-          Log in
+          <div class="but" type="submit">登录</div>
         </a-button>
       </a-form-item>
     </a-form>
+    <router-link to="/register">
+      没有账号? 点击注册。
+    </router-link>
   </div>
 </template>
 
 <script>
-import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
-import { login } from "@/util/request";
+import { LockOutlined, UserOutlined } from '@ant-design/icons-vue';
+import { login, register } from "@/util/request";
+import { message } from "ant-design-vue";
 
 export default {
   name: "Login",
@@ -59,14 +57,31 @@ export default {
   },
   methods: {
     submit() {
-      console.log(this.form)
+      this.doLogin();
+    },
+    doLogin() {
+      const key = 'LOGIN';
+      message.loading({ content: '发送请求中...', key });
       const { username, password } = this.form;
       login(username, password)
           .then(() => {
-
+            message.success({ content: '登录成功, 正在跳转', key, duration: 2 });
           })
           .catch(err => {
-            console.log(err)
+            message.error({ content: '登录失败, 原因为: ' + err, key, duration: 2 });
+          })
+    },
+    doRegister() {
+      const key = 'REGISTER';
+      message.loading({ content: '发送请求中...', key });
+      const { username, password, email } = this.form;
+      register(username, password, email)
+          .then(() => {
+            message.success({ content: '注册成功, 返回登录', key, duration: 2 });
+          })
+          .catch(err => {
+            message.error({ content: '登录失败, 原因为: ' + err, key, duration: 2 });
+
           })
     }
   }
@@ -74,16 +89,5 @@ export default {
 </script>
 
 <style scoped>
-.login {
-  position: absolute;
-  margin: auto;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: rgba(29, 29, 31, 0.72);
-  backdrop-filter: saturate(180%) blur(20px);
-  width: 1000px;
-  height: 750px;
-}
+@import url(./loginAndRegisterStyle.css);
 </style>

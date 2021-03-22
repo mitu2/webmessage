@@ -1,0 +1,39 @@
+.login, .register {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(29, 29, 31, 0.72);
+    backdrop-filter: saturate(180%) blur(20px);
+    width: 715px;
+    height: 567px;
+    text-align: center;
+    color: white;
+    font-size: 16px;
+}
+
+.title {
+    font-size: 2em;
+    margin: 0.67em 0;
+    font-family: 'Open Sans', sans-serif;
+    color: #fff;
+    text-shadow: 0 0 10px;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.wm-input .ant-form-item-control-wrapper {
+    margin: 0 auto;
+}
+.wm-input .ant-input {
+    width: 260px;
+}
+.wm-input {
+    padding: 0 !important;
+}
+
+.but {
+    width: 278px;
+}

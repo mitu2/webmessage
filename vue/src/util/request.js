@@ -52,6 +52,15 @@ export function login(username, password) {
     })
 }
 
+export function register(username, password, email) {
+    notEmpty('register', username, password, email);
+    return axiosInstance.post('/register', {
+        username,
+        password,
+        email
+    })
+}
+
 
 window.axios = axiosInstance;
 export default axiosInstance;
