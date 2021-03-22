@@ -1,9 +1,11 @@
 package com.brageast.project.webmessage.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
@@ -22,6 +24,7 @@ public class ResponseMessage implements Serializable {
     @Builder.Default
     private String message = HttpStatus.OK.getReasonPhrase();
     private Object data;
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     @Builder.Default
     private Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
 

@@ -4,14 +4,16 @@
       登录
     </div>
     <a-form
-      :model="form"
+        :model="form"
     >
       <a-form-item>
         <div>
           用户名
         </div>
-        <a-input v-model:value="form.user">
-          <template #prefix><UserOutlined style="color: rgba(0, 0, 0, 0.25)" /></template>
+        <a-input v-model:value="form.username">
+          <template #prefix>
+            <UserOutlined style="color: rgba(0, 0, 0, 0.25)"/>
+          </template>
         </a-input>
       </a-form-item>
       <a-form-item>
@@ -19,14 +21,17 @@
           密码
         </div>
         <a-input v-model:value="form.password" type="password">
-          <template #prefix><LockOutlined style="color: rgba(0, 0, 0, 0.25)" /></template>
+          <template #prefix>
+            <LockOutlined style="color: rgba(0, 0, 0, 0.25)"/>
+          </template>
         </a-input>
       </a-form-item>
       <a-form-item>
         <a-button
             type="primary"
             html-type="submit"
-            :disabled="form.user === '' || form.password === ''"
+            @click="submit"
+            :disabled="form.username === '' || form.password === ''"
         >
           Log in
         </a-button>
@@ -37,6 +42,7 @@
 
 <script>
 import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
+import { login } from "@/util/request";
 
 export default {
   name: "Login",
@@ -45,12 +51,24 @@ export default {
       form: {
         username: '',
         password: '',
-        email: ''
       }
     }
   },
   components: {
     UserOutlined, LockOutlined
+  },
+  methods: {
+    submit() {
+      console.log(this.form)
+      const { username, password } = this.form;
+      login(username, password)
+          .then(() => {
+
+          })
+          .catch(err => {
+            console.log(err)
+          })
+    }
   }
 }
 </script>

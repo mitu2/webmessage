@@ -3,9 +3,11 @@ package com.brageast.project.webmessage.config.security;
 import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.service.UserService;
 import com.brageast.project.webmessage.util.JwtUtils;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,17 +38,7 @@ public class CheckTokenFilter extends OncePerRequestFilter {
     @Autowired
     private UserService userService;
 
-    /**
-     * Same contract as for {@code doFilter}, but guaranteed to be
-     * just invoked once per request within a single request thread.
-     * See {@link #shouldNotFilterAsyncDispatch()} for details.
-     * <p>Provides HttpServletRequest and HttpServletResponse arguments instead of the
-     * default ServletRequest and ServletResponse ones.
-     *
-     * @param request
-     * @param response
-     * @param filterChain
-     */
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader(TOKEN_HEADER);
@@ -64,7 +56,10 @@ public class CheckTokenFilter extends OncePerRequestFilter {
                     }
                 }
 
-            } catch (Exception e) {
+            } /*catch (ExpiredJwtException e) {
+                response.sendError(HttpStatus.Au);
+                return;
+            } */catch (Exception e) {
                 if (log.isDebugEnabled()) {
                     log.debug(e.getMessage(), e);
                 }

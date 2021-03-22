@@ -1,11 +1,11 @@
 package com.brageast.project.webmessage.service.impl;
 
 import com.brageast.project.webmessage.db.repository.UserRepository;
-import com.brageast.project.webmessage.pojo.User;
-import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.exception.UserExistedException;
 import com.brageast.project.webmessage.exception.UserLoginFailedException;
 import com.brageast.project.webmessage.exception.UserNotFoundException;
+import com.brageast.project.webmessage.pojo.User;
+import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.service.UserService;
 import com.brageast.project.webmessage.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     public UserTable addUser(User user) throws UserExistedException {
         final String username = user.getUsername();
         if (userRepository.existsByUsername(username)) {
-            throw new UserExistedException(username);
+            throw new UserExistedException("用户名" + username + "已存在");
         }
         UserTable userTable = userUserTableConvert.convert(user);
         if (userTable != null) {
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
     public UserTable findUser(String username) throws UserNotFoundException {
         final UserTable userTable = userRepository.findByUsername(username);
         if (userTable == null) {
-            throw new UserExistedException("未找到用户, 用户名:" + username);
+            throw new UserNotFoundException("未找到用户, 用户名:" + username);
         }
         return userTable;
     }
@@ -88,8 +88,7 @@ public class UserServiceImpl implements UserService {
         final UserTable userTable = findUser(user.getUsername());
         if (passwordEncoder.matches(user.getPassword(), userTable.getPassword())) {
             return JwtUtils.buildToken(userTable);
-        }
-        else {
+        } else {
             throw new UserLoginFailedException("用户" + user.getUsername() + "登录失败, 密码错误!");
         }
     }
