@@ -1,5 +1,5 @@
 <template>
-  <div class="register">
+  <div class="register" @keyup.enter="submit">
     <div class="title" style="margin-top: 70px">
       注册页面
     </div>
@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     submit() {
-
+      this.doRegister();
     },
     doRegister() {
       const key = 'REGISTER';

@@ -1,4 +1,4 @@
-import { Button, Form, Input, ConfigProvider } from 'ant-design-vue'
+import { Button, Form, Input, ConfigProvider, Layout } from 'ant-design-vue'
 
 export default {
     install(app) {
@@ -6,5 +6,6 @@ export default {
             .use(Form)
             .use(Input)
             .use(ConfigProvider)
+            .use(Layout)
     }
 }
