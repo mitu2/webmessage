@@ -5,21 +5,30 @@
 </template>
 <script>
 import { message } from "ant-design-vue";
+import { mapState } from "vuex";
 
 export default {
   name: 'App',
   watch: {
     '$route': {
       immutable: true,
-      handler(nVal) {
-        const { state: { isLogin } } = this.$store;
-        const urls = ['/login', '/register'];
-        if (urls.indexOf(nVal) !== -1 && !isLogin) {
+      handler(to) {
+        const urls = [ '/login', '/register' ];
+        if (urls.indexOf(to.path) === -1 && !this.isLogin) {
           this.$router.push('/login');
           message.error({ content: '您未登录自动为您跳转登录页面', key: 'NOT_LOGIN', duration: 2 });
         }
       }
+    },
+    isLogin(nVal) {
+      if (!nVal) {
+        this.$router.push('/login');
+        message.error({ content: '您未登录自动为您跳转登录页面', key: 'NOT_LOGIN', duration: 2 });
+      }
     }
+  },
+  computed: {
+    ...mapState(['isLogin'])
   },
   methods: {
     getPopupContainer(el, dialogContext) {
@@ -29,6 +38,9 @@ export default {
         return document.body;
       }
     },
+  },
+  mounted() {
+    console.log(this.$store)
   }
 }
 </script>

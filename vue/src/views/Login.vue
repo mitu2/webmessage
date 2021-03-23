@@ -67,9 +67,11 @@ export default {
           .then(() => {
             this.$store.dispatch('updateUserInfo')
                 .then(bol => {
-                  console.log(bol)
                   if (bol) {
                     message.success({ content: '登录成功, 正在跳转', key, duration: 2 });
+                    setTimeout(() => {
+                      this.$router.push('/')
+                    }, 2000)
                   } else {
                     message.error({ content: '登录失败, 原因为: 获取用户信息失败', key, duration: 2 });
                   }

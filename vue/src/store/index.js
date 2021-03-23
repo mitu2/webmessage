@@ -1,7 +1,7 @@
 import { createStore } from 'vuex'
 import { updateUserInfo } from "@/store/actions";
 
-const store = createStore({
+export default createStore({
   state: {
     isLogin: false,
     userInfo: {},
@@ -20,5 +20,3 @@ const store = createStore({
   modules: {
   }
 });
-export default store
-

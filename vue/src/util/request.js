@@ -1,18 +1,12 @@
 import axios from "axios";
 import router from "@/router";
-import store from "@/store";
 
-export const axiosInstance = createAxios();
+export const TOKE_NAME = 'Token';
+export let axiosInstance = createAxios();
 
-async function createAxios(config) {
+function createAxios(config) {
     const instance = axios.create(config);
-    const token = localStorage.getItem('token');
-    if (token && token.length > 0) {
-        if (await store.dispatch('updateUserInfo')) {
-            instance.defaults.headers['Authorization'] = 'Bearer ' + token;
-        }
 
-    }
     // 添加响应拦截器
     instance.interceptors.response.use(function (response) {
         // 对响应数据做点什么
@@ -36,6 +30,7 @@ function notEmpty(method, ...parameters) {
     }
 }
 
+
 /**
  * 用户登录操作
  * @param username 用户名
@@ -49,7 +44,7 @@ export function login(username, password) {
         password,
     }).then(({ data }) => {
         if (data && data.code === 200) {
-            localStorage.setItem('Token', data.data);
+            localStorage.setItem(TOKE_NAME, data.data);
             axiosInstance.defaults.headers['Authorization'] = 'Bearer ' + data.data;
         }
         return data;
@@ -67,6 +62,23 @@ export function register(username, password, email) {
 
 export default {
     install(Vue) {
-        Vue.config.globalProperties.$http = axiosInstance;
+        const { globalProperties } = Vue.config
+        globalProperties.$http = axiosInstance;
+        const token = localStorage.getItem(TOKE_NAME);
+        if (token && token.length > 0) {
+            axiosInstance.defaults.headers['Authorization'] = 'Bearer ' + token;
+            const { $store } = globalProperties;
+            $store.commit('setLogin', true)
+            $store.dispatch('updateUserInfo')
+                .then(status => {
+                    if (!status) {
+                        $store.commit('setLogin', false)
+                    }
+                })
+                .catch(err => {
+                    $store.commit('setLogin', false)
+                    console.log(err)
+                });
+        }
     }
 };
