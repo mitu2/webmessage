@@ -31,11 +31,18 @@ public interface UserService {
     /**
      * 根据用户名查找用户
      *
-     * @param id 用户id
+     * @param username 用户名字
      * @return 用户信息
      * @throws UserNotFoundException 如果未找到抛出异常
      */
     UserTable findUser(String username) throws UserNotFoundException;
+
+    /**
+     * 当前登录用户信息
+     * @return 当前登录用户信息
+     * @throws UserNotFoundException 用户未找到异常
+     */
+    UserTable findCurrentLoginUserTable() throws UserNotFoundException;
 
     /**
      * 用户尝试登录相关操作

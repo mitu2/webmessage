@@ -1,13 +1,17 @@
 import axios from "axios";
 import router from "@/router";
+import store from "@/store";
 
-const axiosInstance = createAxios();
+export const axiosInstance = createAxios();
 
-function createAxios(config) {
+async function createAxios(config) {
     const instance = axios.create(config);
     const token = localStorage.getItem('token');
     if (token && token.length > 0) {
-        instance.defaults.headers['Authorization'] = 'Bearer ' + token;
+        if (await store.dispatch('updateUserInfo')) {
+            instance.defaults.headers['Authorization'] = 'Bearer ' + token;
+        }
+
     }
     // 添加响应拦截器
     instance.interceptors.response.use(function (response) {
@@ -61,6 +65,8 @@ export function register(username, password, email) {
     })
 }
 
-
-window.axios = axiosInstance;
-export default axiosInstance;
+export default {
+    install(Vue) {
+        Vue.config.globalProperties.$http = axiosInstance;
+    }
+};

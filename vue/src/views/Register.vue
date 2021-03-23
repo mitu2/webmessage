@@ -16,7 +16,7 @@
       <a-form-item class="wm-input">
         <a-input v-model:value="form.email" placeholder="邮箱">
           <template #prefix>
-            <LockOutlined style="color: rgba(0, 0, 0, 0.25)"/>
+            <MailOutlined style="color: rgba(0, 0, 0, 0.25)"/>
           </template>
         </a-input>
       </a-form-item>
@@ -50,7 +50,9 @@
 </template>
 
 <script>
-import { LockOutlined, UserOutlined } from '@ant-design/icons-vue';
+import { LockOutlined, UserOutlined, MailOutlined } from '@ant-design/icons-vue';
+import { message } from "ant-design-vue";
+import { register } from "@/util/request";
 
 export default {
   name: "Register",
@@ -65,8 +67,27 @@ export default {
     }
   },
   components: {
-    UserOutlined, LockOutlined
+    UserOutlined, LockOutlined, MailOutlined
   },
+  methods: {
+    submit() {
+
+    },
+    doRegister() {
+      const key = 'REGISTER';
+      message.loading({ content: '发送请求中...', key });
+      const { username, password, email } = this.form;
+      register(username, password, email)
+          .then(() => {
+            message.success({ content: '注册成功, 返回登录', key, duration: 2 });
+            this.$router.push('/login')
+          })
+          .catch(err => {
+            message.error({ content: '登录失败, 原因为: ' + err, key, duration: 2 });
+
+          })
+    }
+  }
 }
 </script>
 

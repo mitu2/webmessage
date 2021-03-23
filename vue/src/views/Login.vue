@@ -7,14 +7,14 @@
         :model="form"
     >
       <a-form-item class="wm-input">
-        <a-input v-model:value="form.username" placeholder="用户名">
+        <a-input v-model:value="form.username" placeholder="用户名" autocomplete="username">
           <template #prefix>
             <UserOutlined style="color: rgba(0, 0, 0, 0.25)"/>
           </template>
         </a-input>
       </a-form-item>
       <a-form-item class="wm-input">
-        <a-input v-model:value="form.password" type="password" placeholder="密码">
+        <a-input v-model:value="form.password" autocomplete="current-password" type="password" placeholder="密码">
           <template #prefix>
             <LockOutlined style="color: rgba(0, 0, 0, 0.25)"/>
           </template>
@@ -39,7 +39,7 @@
 
 <script>
 import { LockOutlined, UserOutlined } from '@ant-design/icons-vue';
-import { login, register } from "@/util/request";
+import { login } from "@/util/request";
 import { message } from "ant-design-vue";
 
 export default {
@@ -65,25 +65,24 @@ export default {
       const { username, password } = this.form;
       login(username, password)
           .then(() => {
-            message.success({ content: '登录成功, 正在跳转', key, duration: 2 });
+            this.$store.dispatch('updateUserInfo')
+                .then(bol => {
+                  console.log(bol)
+                  if (bol) {
+                    message.success({ content: '登录成功, 正在跳转', key, duration: 2 });
+                  } else {
+                    message.error({ content: '登录失败, 原因为: 获取用户信息失败', key, duration: 2 });
+                  }
+                })
+                .catch(err => {
+                  message.error({ content: '登录失败, 原因为: ' + err, key, duration: 2 });
+                })
           })
           .catch(err => {
             message.error({ content: '登录失败, 原因为: ' + err, key, duration: 2 });
           })
     },
-    doRegister() {
-      const key = 'REGISTER';
-      message.loading({ content: '发送请求中...', key });
-      const { username, password, email } = this.form;
-      register(username, password, email)
-          .then(() => {
-            message.success({ content: '注册成功, 返回登录', key, duration: 2 });
-          })
-          .catch(err => {
-            message.error({ content: '登录失败, 原因为: ' + err, key, duration: 2 });
 
-          })
-    }
   }
 }
 </script>

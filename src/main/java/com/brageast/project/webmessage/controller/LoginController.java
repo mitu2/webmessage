@@ -31,9 +31,9 @@ public class LoginController {
                 .build();
     }
 
-    @GetMapping("register")
-    String registerHtml() {
-        return "register";
+    @GetMapping(path = {"register", "login"})
+    String registerAndLoginHtml() {
+        return "index";
     }
 
     @PostMapping(path = "login")
@@ -44,11 +44,6 @@ public class LoginController {
                 .builder()
                 .data(token)
                 .build();
-    }
-
-    @GetMapping("login")
-    String loginHtml() {
-        return "login";
     }
 
 }

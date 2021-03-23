@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -63,7 +65,8 @@ public class UserServiceImpl implements UserService {
     /**
      * 根据用户名查找用户
      *
-     * @param username@return 用户信息
+     * @param username 用户名字
+     * @return 用户信息
      * @throws UserNotFoundException 如果未找到抛出异常
      */
     @Override
@@ -73,6 +76,21 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException("未找到用户, 用户名:" + username);
         }
         return userTable;
+    }
+
+    /**
+     * 当前登录用户信息
+     *
+     * @return 当前登录用户信息
+     * @throws UserNotFoundException 用户未找到异常
+     */
+    @Override
+    public UserTable findCurrentLoginUserTable() throws UserNotFoundException {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserTable) {
+            return (UserTable) authentication.getPrincipal();
+        }
+        throw new UserNotFoundException("未找到相关用户!");
     }
 
     /**
