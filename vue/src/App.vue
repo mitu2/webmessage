@@ -24,6 +24,10 @@ export default {
       if (!nVal) {
         this.$router.push('/login');
         message.error({ content: '您未登录自动为您跳转登录页面', key: 'NOT_LOGIN', duration: 2 });
+        this.$wsocket.close();
+      }
+      else {
+        this.$wsocket.create();
       }
     }
   },
