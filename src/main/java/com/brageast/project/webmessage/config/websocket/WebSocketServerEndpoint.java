@@ -16,7 +16,7 @@ import java.util.Objects;
 
 @Slf4j
 @Component
-@ServerEndpoint("/websocket")
+@ServerEndpoint(value = "/websocket")
 public class WebSocketServerEndpoint {
 
     final ObjectMapper mapper;
@@ -27,12 +27,15 @@ public class WebSocketServerEndpoint {
     }
 
     @OnOpen
-    public void onOpen(Session session) {
-
+    public void onOpen(Session session, EndpointConfig config) {
+        WebSocketUtils.sendObject(session, Message
+                .builder()
+                .data("链接成功")
+                .build());
     }
 
     @OnClose
-    public void onClose(Session session) {
+    public void onClose(Session session, CloseReason closeReason) {
     }
 
     @OnError

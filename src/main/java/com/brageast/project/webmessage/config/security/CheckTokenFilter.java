@@ -3,11 +3,10 @@ package com.brageast.project.webmessage.config.security;
 import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.service.UserService;
 import com.brageast.project.webmessage.util.JwtUtils;
-import io.jsonwebtoken.ExpiredJwtException;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,21 +28,25 @@ public class CheckTokenFilter extends OncePerRequestFilter {
     /**
      * Token请求头名称
      */
-    private static final String TOKEN_HEADER = "Authorization";
+    public static final String TOKEN_HEADER = "Authorization";
     /**
      * Token前缀
      */
-    private static final String TOKEN_PREFIX = "Bearer";
+    public static final String TOKEN_PREFIX = "Bearer";
+
+    /**
+     * WebSocket
+     */
+    public static final String SOCKET_HEADER = "token";
 
     @Autowired
     private UserService userService;
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = request.getHeader(TOKEN_HEADER);
-        if (token != null && token.startsWith(TOKEN_PREFIX) && isNotLogin()) {
-            token = token.replaceFirst(TOKEN_PREFIX, "").replace(" ", "");
+    protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
+        final String token = getToken(request);
+        if (token != null && isNotLogin()) {
             try {
                 final String username = JwtUtils.getUsername(token);
                 final UserTable user = userService.findUser(username);
@@ -55,18 +58,30 @@ public class CheckTokenFilter extends OncePerRequestFilter {
                         log.debug("用户{}校验成功!", username);
                     }
                 }
-
-            } /*catch (ExpiredJwtException e) {
-                response.sendError(HttpStatus.Au);
-                return;
-            } */catch (Exception e) {
+            } catch (Exception e) {
                 if (log.isDebugEnabled()) {
                     log.debug(e.getMessage(), e);
                 }
             }
         }
-//        response.sendRedirect("/login");
         filterChain.doFilter(request, response);
+    }
+
+    private String getToken(HttpServletRequest request) {
+        boolean isWebSocket = "websocket".equalsIgnoreCase(request.getHeader("Upgrade"));
+        String token = null;
+        if (!isWebSocket) {
+            String _token = request.getHeader(TOKEN_HEADER);
+            if (_token != null) {
+                token = _token
+                        .replaceFirst(TOKEN_PREFIX, "")
+                        .replace(" ", "");
+            }
+        } else {
+            // 浏览器原生WebSocket不支持添加请求头(可还行)
+            token = request.getParameter(SOCKET_HEADER);
+        }
+        return token;
     }
 
     private boolean isNotLogin() {

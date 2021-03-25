@@ -12,5 +12,5 @@
 
 * 拷贝项目 [Github](https://github.com/mitu2/webmessage) Or [Gitee](https://gitee.com/chenmoand/webmessage) 
 * 修改application-dev.yml的Mysql相关配置
-* 然后在当前目录下运行 `cd vue && npm run build`
+* 然后在当前目录下运行 `cd vue && npm install && npm run build`
 * 继续在当前目录下运行`mvn spring-boot:start -DskipTests`

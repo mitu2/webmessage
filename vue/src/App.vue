@@ -11,7 +11,6 @@ export default {
   name: 'App',
   watch: {
     '$route': {
-      immutable: true,
       handler(to) {
         const urls = [ '/login', '/register' ];
         if (urls.indexOf(to.path) === -1 && !this.isLogin) {
@@ -20,14 +19,16 @@ export default {
         }
       }
     },
-    isLogin(nVal) {
-      if (!nVal) {
-        this.$router.push('/login');
-        message.error({ content: '您未登录自动为您跳转登录页面', key: 'NOT_LOGIN', duration: 2 });
-        this.$wsocket.close();
-      }
-      else {
-        this.$wsocket.create();
+    isLogin: {
+      immediate: true,
+      handler(nVal) {
+        if (!nVal) {
+          this.$router.push('/login');
+          message.error({ content: '您未登录自动为您跳转登录页面', key: 'NOT_LOGIN', duration: 2 });
+          this.$wsocket.close();
+        } else {
+          this.$wsocket.create();
+        }
       }
     }
   },

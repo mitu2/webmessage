@@ -22,9 +22,10 @@ class WebSocketUtil {
         return watch(this.#status, callback)
     }
 
-    create(url = 'ws:/websocket', defaultSendObj) {
+    create(url = `ws://localhost:8080/websocket`, defaultSendObj = {}) {
         this.close()
-        const webSocket = new WebSocket(url);
+        const token = localStorage.getItem('Token');
+        const webSocket = new WebSocket(`${ url }?token=${ token }`);
         this.#status.value = 'CREATE';
         webSocket.onopen = () => {
             this.#status.value = 'OK';
