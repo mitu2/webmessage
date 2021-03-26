@@ -4,6 +4,8 @@ public enum MessageType {
 
     TEXT,
     ERROR,
+    INFO,
+    ALL_USER,
     OTHER;
 
     @Override

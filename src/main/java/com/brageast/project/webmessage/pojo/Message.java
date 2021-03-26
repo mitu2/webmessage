@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 public class Message {
 
-    private UserTable user;
+    private UserTable recipient;
 
     /**
      * 发送消息类型
@@ -24,18 +24,20 @@ public class Message {
     @Builder.Default
     private MessageType type = MessageType.TEXT;
 
+    private String message;
+
     private Object data;
 
     @Builder.Default
     private Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
 
-    public Message to(UserTable user) {
+    public Message to(UserTable recipient) {
         return Message
                 .builder()
                 .timestamp(timestamp)
                 .type(type)
                 .data(data)
-                .user(user)
+                .recipient(recipient)
                 .build();
     }
 

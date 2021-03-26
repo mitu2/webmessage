@@ -13,9 +13,17 @@ export default {
     '$route': {
       handler(to) {
         const urls = [ '/login', '/register' ];
-        if (urls.indexOf(to.path) === -1 && !this.isLogin) {
-          this.$router.push('/login');
-          message.error({ content: '您未登录自动为您跳转登录页面', key: 'NOT_LOGIN', duration: 2 });
+
+        const { isLogin, goLink } = this;
+
+        if (urls.indexOf(to.path) === -1) {
+          if (!isLogin) {
+            goLink('/login', '您未登录自动为您跳转登录页面');
+          }
+        } else {
+          if (isLogin) {
+            goLink('/', '您已经登录, 如果访问请先退出登录');
+          }
         }
       }
     },
@@ -23,8 +31,7 @@ export default {
       immediate: true,
       handler(nVal) {
         if (!nVal) {
-          this.$router.push('/login');
-          message.error({ content: '您未登录自动为您跳转登录页面', key: 'NOT_LOGIN', duration: 2 });
+          this.goLink('/login', '您未登录自动为您跳转登录页面');
           this.$wsocket.close();
         } else {
           this.$wsocket.create();
@@ -33,9 +40,13 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isLogin'])
+    ...mapState([ 'isLogin' ])
   },
   methods: {
+    goLink(link, text) {
+      this.$router.push(link);
+      message.error({ content: text, key: 'GO_LINK', duration: 2 });
+    },
     getPopupContainer(el, dialogContext) {
       if (dialogContext) {
         return dialogContext.getDialogWrap();
@@ -44,6 +55,13 @@ export default {
       }
     },
   },
+  mounted() {
+    this.$wsocket.watchStatus((nVal) => {
+      if (nVal !== 'OK' && this.isLogin) {
+        this.$wsocket.create();
+      }
+    })
+  }
 }
 </script>
 <style>

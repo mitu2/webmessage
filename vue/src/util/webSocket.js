@@ -1,13 +1,18 @@
 import { ref, watch } from "vue";
+import { message } from "ant-design-vue";
 
 class WebSocketUtil {
 
     #webSocket;
-    #status;
-    #SEND_JSON_CACHE = []
+    #status = ref('NO_CREATE');
+    #message = ref([]);
+    #SEND_JSON_CACHE = [];
 
     constructor() {
-        this.#status = ref('NO_CREATE');
+    }
+
+    get message() {
+        return this.#message.value;
     }
 
     get status() {
@@ -18,11 +23,14 @@ class WebSocketUtil {
         return this.status === 'OK';
     }
 
-    watchStatus(callback) {
-        return watch(this.#status, callback)
+    watchStatus(callback, options) {
+        return watch(this.#status, callback, options)
+    }
+    watchMessage(callback, options) {
+        return watch(this.#message, callback, options)
     }
 
-    create(url = `ws://localhost:8080/websocket`, defaultSendObj = {}) {
+    create(url = `ws://localhost:8080/websocket`, defaultSendObj) {
         this.close()
         const token = localStorage.getItem('Token');
         const webSocket = new WebSocket(`${ url }?token=${ token }`);
@@ -36,10 +44,43 @@ class WebSocketUtil {
             this.#SEND_JSON_CACHE = []
             this.sendObject(defaultSendObj);
         };
+        webSocket.onclose = () => {
+            this.#status.value = 'ERROR';
+            message.error({ content: "[WS] 链接断开", duration: 2 })
+        }
+        webSocket.onmessage = (ev) => {
+            let msg;
+            try {
+                msg = JSON.parse(ev.data);
+            // eslint-disable-next-line no-empty
+            } catch (e){
+
+            }
+            if (msg && msg.type) {
+                switch (msg.type) {
+                    case 'ERROR':
+                        message.error({content: msg.message, key: msg.message, duration: 3});
+                        break
+                    case 'TEXT':
+                        this.#message.value.push(msg);
+                        break
+                    case 'INFO':
+                        console.log(msg.data);
+                        break
+                    default:
+
+                }
+            }
+
+
+        };
     }
 
     sendObject(obj) {
-        const json = JSON.parse(obj);
+        if (!obj || obj.length === 0) {
+            return;
+        }
+        const json = JSON.stringify(obj);
         if (this.isOk) {
             this.#webSocket.send(json)
         }

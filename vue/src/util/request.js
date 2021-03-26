@@ -64,6 +64,7 @@ export default {
     install(Vue) {
         const { globalProperties } = Vue.config
         globalProperties.$http = axiosInstance;
+        window.axios = axiosInstance;
         const token = localStorage.getItem(TOKE_NAME);
         if (token && token.length > 0) {
             axiosInstance.defaults.headers['Authorization'] = 'Bearer ' + token;

@@ -30,8 +30,10 @@ public class WebSocketServerEndpoint {
     public void onOpen(Session session, EndpointConfig config) {
         WebSocketUtils.sendObject(session, Message
                 .builder()
+                .type(MessageType.INFO)
                 .data("链接成功")
-                .build());
+                .build()
+        );
     }
 
     @OnClose
@@ -45,28 +47,62 @@ public class WebSocketServerEndpoint {
 
     @OnMessage
     public void onMessage(Session session, String text) {
+        final Message recipientMessage;
         try {
-            final Message message = mapper.readValue(text, Message.class);
-            final UserTable user = message.getUser();
-            if (user == null) {
-                WebSocketUtils.sendObject(session, Message
-                        .builder()
-                        .data("请指定发送用户")
-                        .type(MessageType.ERROR)
-                        .build()
-                );
-                return;
-            }
-            final Message toMessage = message.to(WebSocketUtils.getUserTable(session));
-            for (Session openSession : session.getOpenSessions()) {
-                final UserTable userTable = WebSocketUtils.getUserTable(openSession);
-                if (userTable != null || openSession == session && Objects.equals(userTable.getId(), user.getId())) {
-                    WebSocketUtils.sendObject(openSession, toMessage);
-                }
-            }
+            recipientMessage = mapper.readValue(text, Message.class);
         } catch (JsonProcessingException e) {
-//            session.getBasicRemote().sendText(Message.builder());
+            // 发送的格式不符合
+            WebSocketUtils.sendObject(session, Message
+                    .builder()
+                    .message("发送格式不正确")
+                    .type(MessageType.ERROR)
+                    .build()
+            );
+            return;
         }
+        if (recipientMessage.getType() == null) {
+            WebSocketUtils.sendObject(session, Message
+                    .builder()
+                    .message("请指定发送类型")
+                    .data(MessageType.values())
+                    .type(MessageType.ERROR)
+                    .build()
+            );
+            return;
+        }
+        final UserTable recipient = recipientMessage.getRecipient();
+        final Message senderMessage = recipientMessage.to(WebSocketUtils.getUserTable(session));
+        switch (recipientMessage.getType()) {
+            case ALL_USER:
+                senderMessage.setType(MessageType.TEXT);
+                for (Session openSession : session.getOpenSessions()) {
+                    if (openSession != session) {
+                        WebSocketUtils.sendObject(openSession, senderMessage);
+                    }
+                }
+                break;
+            case TEXT:
+                if (recipient == null) {
+                    WebSocketUtils.sendObject(session, Message
+                            .builder()
+                            .message("请指定发送用户对象")
+                            .type(MessageType.ERROR)
+                            .build()
+                    );
+                    break;
+                }
+                for (Session openSession : session.getOpenSessions()) {
+                    final UserTable userTable = WebSocketUtils.getUserTable(openSession);
+                    if (userTable != null && openSession != session && Objects.equals(userTable.getId(), recipient.getId())) {
+                        WebSocketUtils.sendObject(openSession, senderMessage);
+                    }
+                }
+                break;
+            default:
+                // TODO 暂时未有其他判断
+        }
+
+
     }
 
 
