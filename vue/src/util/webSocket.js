@@ -8,6 +8,8 @@ class WebSocketUtil {
     #message = ref([]);
     #SEND_JSON_CACHE = [];
 
+    url = 'ws://localhost:8080/websocket';
+
     constructor() {
     }
 
@@ -30,7 +32,7 @@ class WebSocketUtil {
         return watch(this.#message, callback, options)
     }
 
-    create(url = `ws://localhost:8080/websocket`, defaultSendObj) {
+    create(url = this.url, defaultSendObj) {
         this.close()
         const token = localStorage.getItem('Token');
         const webSocket = new WebSocket(`${ url }?token=${ token }`);

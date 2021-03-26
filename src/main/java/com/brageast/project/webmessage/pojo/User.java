@@ -16,7 +16,7 @@ public class User implements Serializable {
     @Length(min = 2, max = 18, message = "用户名不能小于2或者大于18")
     private String username;
     @NotBlank(message = "密码不能为空")
-    @Length(min = 6, max = 15, message = "密码不能小于6或者大于15")
+    @Length(min = 5, max = 15, message = "密码不能小于6或者大于15")
     private String password;
     @NotBlank(message = "邮箱不能为空")
     @Email(message = "邮箱格式不正确")

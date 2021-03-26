@@ -1,7 +1,7 @@
 package com.brageast.project.webmessage;
 
 import com.brageast.project.webmessage.constant.MessageType;
-import com.brageast.project.webmessage.pojo.Message;
+import com.brageast.project.webmessage.pojo.WebSocketMessage;
 import com.brageast.project.webmessage.util.WebSocketUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,7 +49,7 @@ public class SocketTest {
         ObjectMapper mapper = WebSocketUtils.MAPPER;
         final String s = MessageType.TEXT.toString();
         log.info(s);
-        log.info(mapper.writeValueAsString(new Message()));
+        log.info(mapper.writeValueAsString(new WebSocketMessage()));
     }
 
 

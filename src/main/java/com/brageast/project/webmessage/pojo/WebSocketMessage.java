@@ -14,9 +14,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Message {
+public class WebSocketMessage {
 
     private UserTable recipient;
+
+    private UserTable sender;
 
     /**
      * 发送消息类型
@@ -31,13 +33,14 @@ public class Message {
     @Builder.Default
     private Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
 
-    public Message to(UserTable recipient) {
-        return Message
+    public WebSocketMessage to(UserTable sender) {
+        return WebSocketMessage
                 .builder()
                 .timestamp(timestamp)
                 .type(type)
+                .message(message)
                 .data(data)
-                .recipient(recipient)
+                .sender(sender)
                 .build();
     }
 

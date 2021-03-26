@@ -4,6 +4,7 @@ import router from "@/router";
 export const TOKE_NAME = 'Token';
 export let axiosInstance = createAxios();
 
+
 function createAxios(config) {
     const instance = axios.create(config);
 

@@ -6,19 +6,23 @@
     <a-layout>
       <a-layout-header>Header</a-layout-header>
       <a-layout-content>
-
+        <home-center />
       </a-layout-content>
-      <a-layout-footer>Footer</a-layout-footer>
+      <a-layout-footer>
+        <home-footer/>
+      </a-layout-footer>
     </a-layout>
   </a-layout>
 </template>
 
 <script>
 import HomeSider from "@/components/layout/HomeSider";
+import HomeFooter from "@/components/layout/HomeFooter";
+import HomeCenter from "@/components/layout/HomeCenter";
 
 export default {
   name: "UseAntdLayout",
-  components: { HomeSider }
+  components: { HomeCenter, HomeFooter, HomeSider }
 }
 </script>
 

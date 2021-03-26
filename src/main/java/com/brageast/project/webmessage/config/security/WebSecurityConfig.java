@@ -35,7 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
 
-    private final CheckTokenFilter checkTokenFilter;
+    private final JWTTokenFilter tokenFilter;
 
 //    @Bean
 //    PersistentTokenRepository persistentTokenRepository() {
@@ -104,7 +104,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers(HeadersConfigurer::cacheControl);
 
         // 过滤器
-        http.addFilterBefore(checkTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
 }
