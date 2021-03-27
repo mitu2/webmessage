@@ -1,5 +1,6 @@
 package com.brageast.project.webmessage.util;
 
+import com.brageast.project.webmessage.pojo.User;
 import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,11 +22,11 @@ public class WebSocketUtils {
 
     }
 
-    public static UserTable getUserTable(Session session) {
+    public static User getUser(Session session) {
         if (session != null && session.getUserPrincipal() instanceof Authentication) {
             Authentication authentication = (Authentication) session.getUserPrincipal();
-            if (authentication.getPrincipal() instanceof UserTable) {
-                return (UserTable) authentication.getPrincipal();
+            if (authentication.getPrincipal() instanceof User) {
+                return (User) authentication.getPrincipal();
             }
         }
         return null;

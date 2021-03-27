@@ -5,13 +5,15 @@ import com.brageast.project.webmessage.exception.UserExistedException;
 import com.brageast.project.webmessage.exception.UserLoginFailedException;
 import com.brageast.project.webmessage.exception.UserNotFoundException;
 import com.brageast.project.webmessage.pojo.User;
+import com.brageast.project.webmessage.pojo.entity.UserEntity;
 import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.service.UserService;
 import com.brageast.project.webmessage.util.JwtUtils;
-import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,12 +24,21 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final Converter<User, UserTable> userUserTableConvert;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    private final ObjectMapper mapper;
+
+    @Autowired
+    public UserServiceImpl(Jackson2ObjectMapperBuilder builder) {
+        this.mapper = builder.build();
+    }
+
 
     /**
      * 添加一个用户
@@ -41,9 +52,17 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByUsername(username)) {
             throw new UserExistedException("用户名" + username + "已存在");
         }
-        UserTable userTable = userUserTableConvert.convert(user);
-        if (userTable != null) {
-            userTable = userRepository.save(userTable);
+        UserTable userTable;
+        try {
+            userTable = mapper.readValue(mapper.writeValueAsString(user), UserTable.class);
+        } catch (JsonProcessingException e) {
+            if (log.isDebugEnabled()) {
+                log.error(e.getMessage(), e);
+            }
+            return null;
+        }
+        userTable = userRepository.save(userTable);
+        if (log.isDebugEnabled()) {
             log.info("用户{}添加添加成功, 信息: {}", username, userTable.toString());
         }
         return userTable;
@@ -101,7 +120,7 @@ public class UserServiceImpl implements UserService {
      * @throws UserLoginFailedException 用户登录失败
      */
     @Override
-    public String doLogin(User user) throws UserLoginFailedException {
+    public String doLogin(UserEntity user) throws UserLoginFailedException {
         Objects.requireNonNull(user, "user字段不能为空!");
         final UserTable userTable = findUser(user.getUsername());
         if (passwordEncoder.matches(user.getPassword(), userTable.getPassword())) {

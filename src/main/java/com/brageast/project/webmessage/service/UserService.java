@@ -1,6 +1,7 @@
 package com.brageast.project.webmessage.service;
 
 import com.brageast.project.webmessage.pojo.User;
+import com.brageast.project.webmessage.pojo.entity.UserEntity;
 import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.exception.UserExistedException;
 import com.brageast.project.webmessage.exception.UserLoginFailedException;
@@ -52,6 +53,6 @@ public interface UserService {
      * @throws UserLoginFailedException 用户登录失败
      * @throws UserNotFoundException 用户未找到异常
      */
-    String doLogin(@NotNull User user) throws UserLoginFailedException, UserNotFoundException;
+    String doLogin(@NotNull UserEntity user) throws UserLoginFailedException, UserNotFoundException;
 
 }

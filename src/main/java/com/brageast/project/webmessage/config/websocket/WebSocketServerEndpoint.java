@@ -1,6 +1,7 @@
 package com.brageast.project.webmessage.config.websocket;
 
 import com.brageast.project.webmessage.constant.MessageType;
+import com.brageast.project.webmessage.pojo.User;
 import com.brageast.project.webmessage.pojo.WebSocketMessage;
 import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.util.WebSocketUtils;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Component;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.util.Objects;
+
+import static com.brageast.project.webmessage.util.WebSocketUtils.sendObject;
 
 @Slf4j
 @Component
@@ -28,7 +31,7 @@ public class WebSocketServerEndpoint {
 
     @OnOpen
     public void onOpen(Session session, EndpointConfig config) {
-        WebSocketUtils.sendObject(session, WebSocketMessage
+        sendObject(session, WebSocketMessage
                 .builder()
                 .type(MessageType.INFO)
                 .data("链接成功")
@@ -52,7 +55,7 @@ public class WebSocketServerEndpoint {
             recipientMessage = mapper.readValue(text, WebSocketMessage.class);
         } catch (JsonProcessingException e) {
             // 发送的格式不符合
-            WebSocketUtils.sendObject(session, WebSocketMessage
+            sendObject(session, WebSocketMessage
                     .builder()
                     .message("发送格式不正确")
                     .type(MessageType.ERROR)
@@ -61,7 +64,7 @@ public class WebSocketServerEndpoint {
             return;
         }
         if (recipientMessage.getType() == null) {
-            WebSocketUtils.sendObject(session, WebSocketMessage
+            sendObject(session, WebSocketMessage
                     .builder()
                     .message("请指定发送类型")
                     .data(MessageType.values())
@@ -70,20 +73,18 @@ public class WebSocketServerEndpoint {
             );
             return;
         }
-        final UserTable recipient = recipientMessage.getRecipient();
-        final WebSocketMessage senderMessage = recipientMessage.to(WebSocketUtils.getUserTable(session));
-        switch (recipientMessage.getType()) {
+        final User recipient = recipientMessage.getRecipient();
+        final WebSocketMessage senderMessage = recipientMessage.to(WebSocketUtils.getUser(session));
+        /*label:*/ switch (recipientMessage.getType()) {
             case ALL_USER:
                 senderMessage.setType(MessageType.TEXT);
                 for (Session openSession : session.getOpenSessions()) {
-//                    if (openSession != session) {
-                    WebSocketUtils.sendObject(openSession, senderMessage);
-//                    }
+                    sendObject(openSession, senderMessage);
                 }
                 break;
             case TEXT:
                 if (recipient == null) {
-                    WebSocketUtils.sendObject(session, WebSocketMessage
+                    sendObject(session, WebSocketMessage
                             .builder()
                             .message("请指定发送用户对象")
                             .type(MessageType.ERROR)
@@ -92,9 +93,9 @@ public class WebSocketServerEndpoint {
                     break;
                 }
                 for (Session openSession : session.getOpenSessions()) {
-                    final UserTable userTable = WebSocketUtils.getUserTable(openSession);
-                    if (userTable != null /*&& openSession != session*/ && Objects.equals(userTable.getId(), recipient.getId())) {
-                        WebSocketUtils.sendObject(openSession, senderMessage);
+                    final User userTable = WebSocketUtils.getUser(openSession);
+                    if (userTable != null /*&& openSession != session*/ && Objects.equals(userTable.getUsername(), recipient.getUsername())) {
+                        sendObject(openSession, senderMessage);
                     }
                 }
                 break;

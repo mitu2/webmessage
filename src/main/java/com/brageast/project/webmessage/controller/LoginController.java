@@ -1,7 +1,7 @@
 package com.brageast.project.webmessage.controller;
 
 import com.brageast.project.webmessage.pojo.ResponseMessage;
-import com.brageast.project.webmessage.pojo.User;
+import com.brageast.project.webmessage.pojo.entity.UserEntity;
 import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class LoginController {
 
     @PostMapping(path = "register")
     @ResponseBody
-    ResponseMessage register(@Valid @RequestBody User user) {
+    ResponseMessage register(@Valid @RequestBody UserEntity user) {
         final UserTable userTable = userService.addUser(user);
         return ResponseMessage
                 .builder()
@@ -38,7 +38,7 @@ public class LoginController {
 
     @PostMapping(path = "login")
     @ResponseBody
-    ResponseMessage login(@RequestBody User user) {
+    ResponseMessage login(@RequestBody UserEntity user) {
         final String token = userService.doLogin(user);
         return ResponseMessage
                 .builder()

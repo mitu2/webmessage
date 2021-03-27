@@ -16,9 +16,9 @@ import java.time.LocalDateTime;
 @Builder
 public class WebSocketMessage {
 
-    private UserTable recipient;
+    private User recipient;
 
-    private UserTable sender;
+    private User sender;
 
     /**
      * 发送消息类型
@@ -33,7 +33,7 @@ public class WebSocketMessage {
     @Builder.Default
     private Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
 
-    public WebSocketMessage to(UserTable sender) {
+    public WebSocketMessage to(User sender) {
         return WebSocketMessage
                 .builder()
                 .timestamp(timestamp)

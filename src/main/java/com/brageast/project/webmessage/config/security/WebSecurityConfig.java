@@ -1,6 +1,6 @@
 package com.brageast.project.webmessage.config.security;
 
-import com.brageast.project.webmessage.pojo.User;
+import com.brageast.project.webmessage.pojo.entity.UserEntity;
 import com.brageast.project.webmessage.pojo.table.UserTable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +31,9 @@ import java.util.Map;
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final DataSource dataSource;
-
-    private final UserDetailsService userDetailsService;
+//    private final DataSource dataSource;
+//
+//    private final UserDetailsService userDetailsService;
 
     private final JWTTokenFilter tokenFilter;
 
@@ -44,22 +44,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //        tokenRepository.setCreateTableOnStartup(true);
 //        return tokenRepository;
 //    }
-
-    @Bean
-    public Converter<User, UserTable> userUserTableConvert() {
-        // NOTE: 如果用lambda形式会导致丢失泛型信息
-        return new Converter<User, UserTable>() {
-            @Override
-            public UserTable convert(User user) {
-                return UserTable
-                        .builder()
-                        .username(user.getUsername())
-                        .password(passwordEncoder().encode(user.getPassword()))
-                        .email(user.getEmail())
-                        .build();
-            }
-        };
-    }
 
     @Bean
     @SuppressWarnings("deprecation")

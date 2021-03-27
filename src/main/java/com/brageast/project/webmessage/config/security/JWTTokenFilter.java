@@ -1,15 +1,16 @@
 package com.brageast.project.webmessage.config.security;
 
-import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.service.UserService;
 import com.brageast.project.webmessage.util.JwtUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -42,6 +43,10 @@ public class JWTTokenFilter extends OncePerRequestFilter {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    @Qualifier("customizeUserDetailsService")
+    private UserDetailsService userDetailsService;
 
 
     @Override
@@ -77,16 +82,12 @@ public class JWTTokenFilter extends OncePerRequestFilter {
 
     private String getToken(HttpServletRequest request) {
         boolean isWebSocket = "websocket".equalsIgnoreCase(request.getHeader("Upgrade"));
-        final String token;
-        if (!isWebSocket) {
-            String _token = request.getHeader(TOKEN_HEADER);
-            token = _token != null ? _token.replaceFirst(TOKEN_PREFIX, "")
-                    .replace(" ", "") : null;
-        } else {
-            // 浏览器原生WebSocket不支持添加请求头(可还行)
-            token = request.getParameter(SOCKET_HEADER);
-        }
-        return token;
+        return isWebSocket ?
+                request.getParameter(SOCKET_HEADER) :
+                Optional.ofNullable(request.getHeader(TOKEN_HEADER))
+                        .orElse("")
+                        .replaceFirst(TOKEN_PREFIX, "")
+                        .replace(" ", "");
     }
 
     private boolean isLogin() {

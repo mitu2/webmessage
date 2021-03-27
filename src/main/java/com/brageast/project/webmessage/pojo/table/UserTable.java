@@ -1,15 +1,12 @@
 package com.brageast.project.webmessage.pojo.table;
 
+import com.brageast.project.webmessage.pojo.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -19,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "user")
-public class UserTable implements UserDetails {
+public class UserTable implements User {
 
     @Id
     @Column(nullable = false, insertable = false, updatable = false)
@@ -32,15 +29,8 @@ public class UserTable implements UserDetails {
     private String password;
     @Column(nullable = false)
     private String email;
-    //    @Builder.Default
-//    @Column(name = "account_non_expired", nullable = false)
-//    private boolean accountNonExpired = true;
-//    @Builder.Default
-//    @Column(name = "account_non_locked", nullable = false)
-//    private boolean accountNonLocked = true;
-//    @Builder.Default
-//    @Column(name = "credentials_non_expired", nullable = false)
-//    private boolean credentialsNonExpired = true;
+    @Column(name = "avatar")
+    private String avatar;
     @Builder.Default
     @Column(name = "enabled", nullable = false)
     private Boolean enabled = true;
@@ -55,7 +45,7 @@ public class UserTable implements UserDetails {
      *
      * @see AuthorityTable
      */
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "user_id",
             referencedColumnName = "id",
@@ -65,31 +55,6 @@ public class UserTable implements UserDetails {
     )
     @JsonIgnore
     @ToString.Exclude
-    private List<AuthorityTable> authorityTables;
+    private List<AuthorityTable> authorities;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        //noinspection unchecked
-        return getAuthorityTables() == null ? Collections.EMPTY_LIST : getAuthorityTables();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return getEnabled() != null ? getEnabled() : false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return getEnabled() != null ? getEnabled() : false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return getEnabled() != null ? getEnabled() : false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return getEnabled() != null ? getEnabled() : false;
-    }
 }
