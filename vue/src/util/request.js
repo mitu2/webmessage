@@ -1,9 +1,9 @@
 import axios from "axios";
 import router from "@/router";
+import { message } from "ant-design-vue";
 
 export const TOKE_NAME = 'Token';
 export let axiosInstance = createAxios();
-
 
 function createAxios(config) {
     const instance = axios.create(config);
@@ -14,9 +14,8 @@ function createAxios(config) {
         return response;
     }, function (err) {
         if (err && err.response && err.response.status === 403) {
+            message.error({ content: '登录过期, 正在为您跳转登陆页面', key: '403', duration: 2 })
             router.push('/login')
-                .then(() => console.log('用户未登录, 字动跳转登录页面'))
-                .catch(err => console.log(err))
         }
         return Promise.reject(err);
     });

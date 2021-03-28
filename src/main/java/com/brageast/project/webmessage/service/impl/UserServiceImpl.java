@@ -98,21 +98,6 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 当前登录用户信息
-     *
-     * @return 当前登录用户信息
-     * @throws UserNotFoundException 用户未找到异常
-     */
-    @Override
-    public UserTable findCurrentLoginUserTable() throws UserNotFoundException {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserTable) {
-            return (UserTable) authentication.getPrincipal();
-        }
-        throw new UserNotFoundException("未找到相关用户!");
-    }
-
-    /**
      * 用户尝试登录相关操作
      *
      * @param user 用户账户密码信息
@@ -124,7 +109,7 @@ public class UserServiceImpl implements UserService {
         Objects.requireNonNull(user, "user字段不能为空!");
         final UserTable userTable = findUser(user.getUsername());
         if (passwordEncoder.matches(user.getPassword(), userTable.getPassword())) {
-            return JwtUtils.buildToken(userTable);
+            return JwtUtils.createToken(userTable);
         } else {
             throw new UserLoginFailedException("用户" + user.getUsername() + "登录失败, 密码错误!");
         }

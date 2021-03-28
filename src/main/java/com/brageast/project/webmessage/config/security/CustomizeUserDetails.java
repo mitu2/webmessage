@@ -1,6 +1,7 @@
 package com.brageast.project.webmessage.config.security;
 
 import com.brageast.project.webmessage.pojo.table.UserTable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -29,6 +30,7 @@ public class CustomizeUserDetails implements UserDetails {
         return this.authorities == null ? Collections.EMPTY_LIST : this.authorities;
     }
 
+    @JsonIgnore
     @Override
     public String getPassword() {
         return userTable.getPassword();

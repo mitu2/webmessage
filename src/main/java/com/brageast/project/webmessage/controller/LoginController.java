@@ -38,12 +38,9 @@ public class LoginController {
 
     @PostMapping(path = "login")
     @ResponseBody
-    ResponseMessage login(@RequestBody UserEntity user) {
+    ResponseMessage<String> login(@RequestBody UserEntity user) {
         final String token = userService.doLogin(user);
-        return ResponseMessage
-                .builder()
-                .data(token)
-                .build();
+        return ResponseMessage.ok(token);
     }
 
 }

@@ -15,7 +15,7 @@ spring:
     show-sql: true
     open-in-view: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/webmessage?useUnicode=true&characterEncoding=gbk&useSSL=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC

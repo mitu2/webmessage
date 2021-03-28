@@ -1,5 +1,10 @@
 import { ref, watch } from "vue";
 import { message } from "ant-design-vue";
+import { TOKE_NAME } from "@/util/request";
+
+function getPort() {
+    return location.port === '8090' ? '8080' : location.port;
+}
 
 class WebSocketUtil {
 
@@ -8,7 +13,7 @@ class WebSocketUtil {
     #message = ref([]);
     #SEND_JSON_CACHE = [];
 
-    url = 'ws://localhost:8080/websocket';
+    url = `ws://${window.location.hostname}:${getPort()}/websocket`;
 
     constructor() {
     }
@@ -34,7 +39,7 @@ class WebSocketUtil {
 
     create(url = this.url, defaultSendObj) {
         this.close()
-        const token = localStorage.getItem('Token');
+        const token = localStorage.getItem(TOKE_NAME);
         const webSocket = new WebSocket(`${ url }?token=${ token }`);
         this.#status.value = 'CREATE';
         webSocket.onopen = () => {
@@ -47,18 +52,18 @@ class WebSocketUtil {
             this.sendObject(defaultSendObj);
         };
         webSocket.onclose = () => {
-            this.#status.value = 'ERROR';
-            message.error({ content: "[WS] 链接断开", duration: 2 })
+            this.#status.value = 'CLOSE';
+            // message.error({ content: "[WS] 链接断开", duration: 2 })
         }
         webSocket.onmessage = (ev) => {
             let msg;
             try {
                 msg = JSON.parse(ev.data);
-            // eslint-disable-next-line no-empty
             } catch (e){
-
+                console.error(e)
+                return;
             }
-            if (msg && msg.type) {
+            if (msg.type) {
                 switch (msg.type) {
                     case 'ERROR':
                         message.error({content: msg.message, key: msg.message, duration: 3});
@@ -67,7 +72,7 @@ class WebSocketUtil {
                         this.#message.value.push(msg);
                         break
                     case 'INFO':
-                        console.log(msg.data);
+                        console.log(`[ws]: ${msg.data}`);
                         break
                     default:
 

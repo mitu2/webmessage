@@ -1,13 +1,11 @@
 package com.brageast.project.webmessage.config.security;
 
-import com.brageast.project.webmessage.pojo.entity.UserEntity;
-import com.brageast.project.webmessage.pojo.table.UserTable;
-import lombok.RequiredArgsConstructor;
+import com.brageast.project.webmessage.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,23 +17,21 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.*;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
-@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 //    private final DataSource dataSource;
 //
 //    private final UserDetailsService userDetailsService;
 
-    private final JWTTokenFilter tokenFilter;
+    @Autowired
+    private CustomizeUserDetailsService userService;
 
 //    @Bean
 //    PersistentTokenRepository persistentTokenRepository() {
@@ -88,7 +84,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers(HeadersConfigurer::cacheControl);
 
         // 过滤器
-        http.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilter(new JWTTokenFilter(authenticationManagerBean(), userService));
     }
 
+    @Bean(name = "myAuthenticationManager")
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 }

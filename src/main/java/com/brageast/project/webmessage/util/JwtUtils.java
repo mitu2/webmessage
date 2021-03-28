@@ -1,6 +1,6 @@
 package com.brageast.project.webmessage.util;
 
-import com.brageast.project.webmessage.pojo.table.UserTable;
+import com.brageast.project.webmessage.pojo.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -26,19 +26,19 @@ public class JwtUtils {
     private static final long TOKEN_EXPIRED_TIME = TimeUnit.DAYS.toMillis(30);
 
     public static final Key SIGN_KEY = Keys.hmacShaKeyFor("C292E9833E772C31EE51C0686FFDDA34".getBytes(StandardCharsets.UTF_8));
-    private static final Gson gson = new GsonBuilder().create();
 
+    private static final Gson gson = new GsonBuilder().create();
 
     private JwtUtils() {
 
     }
 
-    public static String buildToken(UserTable userTable) {
-        return buildToken(userTable, TOKEN_EXPIRED_TIME);
+    public static String createToken(User user) {
+        return createToken(user, TOKEN_EXPIRED_TIME);
     }
 
-    public static String buildToken(UserTable userTable, long time) {
-        final Map<String, String> map = Collections.singletonMap("username", userTable.getUsername());
+    public static String createToken(User user, long time) {
+        final Map<String, String> map = Collections.singletonMap("username", user.getUsername());
         final JwtBuilder jwtBuilder = Jwts.builder()
                 .setSubject(gson.toJson(map))
                 .signWith(SIGN_KEY)

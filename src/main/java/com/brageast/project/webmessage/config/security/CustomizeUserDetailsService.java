@@ -25,4 +25,5 @@ public class CustomizeUserDetailsService implements UserDetailsService {
         }
         return new CustomizeUserDetails(userTable, authorityRepository.findAllByUserId(userTable.getId()));
     }
+
 }

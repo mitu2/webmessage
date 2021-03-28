@@ -1,10 +1,12 @@
 package com.brageast.project.webmessage.util;
 
+import com.brageast.project.webmessage.config.security.CustomizeUserDetails;
 import com.brageast.project.webmessage.pojo.User;
 import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.websocket.Session;
 
@@ -25,8 +27,8 @@ public class WebSocketUtils {
     public static User getUser(Session session) {
         if (session != null && session.getUserPrincipal() instanceof Authentication) {
             Authentication authentication = (Authentication) session.getUserPrincipal();
-            if (authentication.getPrincipal() instanceof User) {
-                return (User) authentication.getPrincipal();
+            if (authentication.getPrincipal() instanceof CustomizeUserDetails) {
+                return ((CustomizeUserDetails) authentication.getPrincipal()).getUserTable();
             }
         }
         return null;

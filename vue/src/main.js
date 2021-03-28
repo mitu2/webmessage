@@ -6,8 +6,7 @@ import store from './store'
 import antd from './util/antd.install'
 import webSocket from "@/util/webSocket";
 
-const app = createApp(App);
-app
+createApp(App)
     .use(store)
     .use(router)
     .use(antd)

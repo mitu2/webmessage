@@ -7,7 +7,7 @@ class JwtUtilsTest {
 
     @Test
     void testBuildToken() throws Exception {
-        final String token = JwtUtils.buildToken(UserTable.builder().username("admin").build());
+        final String token = JwtUtils.createToken(UserTable.builder().username("admin").build());
         System.out.println(token);
         System.out.println(JwtUtils.getUsername(token));
     }

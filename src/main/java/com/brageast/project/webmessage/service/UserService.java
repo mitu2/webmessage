@@ -39,13 +39,6 @@ public interface UserService {
     UserTable findUser(String username) throws UserNotFoundException;
 
     /**
-     * 当前登录用户信息
-     * @return 当前登录用户信息
-     * @throws UserNotFoundException 用户未找到异常
-     */
-    UserTable findCurrentLoginUserTable() throws UserNotFoundException;
-
-    /**
      * 用户尝试登录相关操作
      *
      * @param user 用户账户密码信息 用户不能为空
