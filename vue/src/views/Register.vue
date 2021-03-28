@@ -36,6 +36,7 @@
       </a-form-item>
       <a-form-item class="wm-input">
         <a-button
+            @click="submit"
             type="primary"
             html-type="submit"
         >

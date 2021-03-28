@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
         UserTable userTable;
         try {
             userTable = mapper.readValue(mapper.writeValueAsString(user), UserTable.class);
+            userTable.setPassword(passwordEncoder.encode(user.getPassword()));
         } catch (JsonProcessingException e) {
             if (log.isDebugEnabled()) {
                 log.error(e.getMessage(), e);
