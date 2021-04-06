@@ -46,6 +46,6 @@ public interface UserService {
      * @throws UserLoginFailedException 用户登录失败
      * @throws UserNotFoundException 用户未找到异常
      */
-    String doLogin(@NotNull UserEntity user) throws UserLoginFailedException, UserNotFoundException;
+    String doLogin(@NotNull User user) throws UserLoginFailedException, UserNotFoundException;
 
 }

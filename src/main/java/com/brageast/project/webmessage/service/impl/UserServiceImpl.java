@@ -14,8 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -52,21 +50,33 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByUsername(username)) {
             throw new UserExistedException("用户名" + username + "已存在");
         }
-        UserTable userTable;
+
+        // User -> UserTable 转化User类型并加密密码
+        UserTable userTable = userAsTable(user);
+        if (userTable == null) {
+            return null;
+        }
+        userTable.setPassword(passwordEncoder.encode(user.getPassword()));
+        UserTable save = userRepository.save(userTable);
+        if (log.isDebugEnabled()) {
+            log.info("用户{}添加添加成功, 信息: {}", username, save.toString());
+        }
+
+        return save;
+    }
+
+    private UserTable userAsTable(User user) {
+        if (user instanceof UserTable) {
+            return (UserTable) user;
+        }
         try {
-            userTable = mapper.readValue(mapper.writeValueAsString(user), UserTable.class);
-            userTable.setPassword(passwordEncoder.encode(user.getPassword()));
+            return mapper.readValue(mapper.writeValueAsString(user), UserTable.class);
         } catch (JsonProcessingException e) {
             if (log.isDebugEnabled()) {
                 log.error(e.getMessage(), e);
             }
             return null;
         }
-        userTable = userRepository.save(userTable);
-        if (log.isDebugEnabled()) {
-            log.info("用户{}添加添加成功, 信息: {}", username, userTable.toString());
-        }
-        return userTable;
     }
 
     /**
@@ -78,8 +88,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserTable findUser(Long id) throws UserNotFoundException {
-        final Optional<UserTable> userTable = userRepository.findById(id);
-        return userTable.orElseThrow(() -> new UserNotFoundException("未找到用户, id:" + id));
+
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("未找到用户, id:" + id));
     }
 
     /**
@@ -91,11 +102,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserTable findUser(String username) throws UserNotFoundException {
-        final UserTable userTable = userRepository.findByUsername(username);
-        if (userTable == null) {
-            throw new UserNotFoundException("未找到用户, 用户名:" + username);
-        }
-        return userTable;
+        return Optional.ofNullable(userRepository.findByUsername(username))
+                .orElseThrow(() -> new UserNotFoundException("未找到用户, 用户名:" + username));
     }
 
     /**
@@ -106,14 +114,13 @@ public class UserServiceImpl implements UserService {
      * @throws UserLoginFailedException 用户登录失败
      */
     @Override
-    public String doLogin(UserEntity user) throws UserLoginFailedException {
+    public String doLogin(User user) throws UserLoginFailedException {
         Objects.requireNonNull(user, "user字段不能为空!");
         final UserTable userTable = findUser(user.getUsername());
         if (passwordEncoder.matches(user.getPassword(), userTable.getPassword())) {
             return JwtUtils.createToken(userTable);
-        } else {
-            throw new UserLoginFailedException("用户" + user.getUsername() + "登录失败, 密码错误!");
         }
+        throw new UserLoginFailedException("用户" + user.getUsername() + "登录失败, 密码错误!");
     }
 
 }
