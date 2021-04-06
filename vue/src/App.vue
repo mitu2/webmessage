@@ -7,13 +7,13 @@
 import { message } from "ant-design-vue";
 import { mapState } from "vuex";
 
+const urls = [ '/login', '/register' ];
+
 export default {
   name: 'App',
   watch: {
     '$route': {
       handler(to) {
-        const urls = [ '/login', '/register' ];
-
         const { isLogin, goLink } = this;
 
         if (urls.indexOf(to.path) === -1) {
@@ -30,12 +30,7 @@ export default {
     isLogin: {
       immediate: true,
       handler(nVal) {
-        if (!nVal) {
-          this.goLink('/login', '您未登录自动为您跳转登录页面');
-          this.$wsocket.close();
-        } else {
-          this.$wsocket.create();
-        }
+       this.$wsocket[nVal ? 'create' : 'close']();
       }
     }
   },
@@ -56,11 +51,11 @@ export default {
     },
   },
   mounted() {
-    this.$wsocket.watchStatus((nVal) => {
+    /** this.$wsocket.watchStatus((nVal) => {
       if (nVal !== 'OK' && this.isLogin) {
         this.$wsocket.create();
       }
-    })
+    }) **/
   }
 }
 </script>

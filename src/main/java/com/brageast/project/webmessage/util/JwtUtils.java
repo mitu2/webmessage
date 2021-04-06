@@ -12,10 +12,7 @@ import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Instant;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class JwtUtils {
@@ -27,7 +24,7 @@ public class JwtUtils {
 
     public static final Key SIGN_KEY = Keys.hmacShaKeyFor("C292E9833E772C31EE51C0686FFDDA34".getBytes(StandardCharsets.UTF_8));
 
-    private static final Gson gson = new GsonBuilder().create();
+    private static final Gson GSON = new GsonBuilder().create();
 
     private JwtUtils() {
 
@@ -40,7 +37,7 @@ public class JwtUtils {
     public static String createToken(User user, long time) {
         final Map<String, String> map = Collections.singletonMap("username", user.getUsername());
         final JwtBuilder jwtBuilder = Jwts.builder()
-                .setSubject(gson.toJson(map))
+                .setSubject(GSON.toJson(map))
                 .signWith(SIGN_KEY)
                 .setIssuedAt(Date.from(Instant.now()));
         if (time > 0) {
@@ -54,11 +51,17 @@ public class JwtUtils {
     }
 
     public static String getUsername(String token) throws Exception {
+        Objects.requireNonNull(token, "token 不能为NULL");
         final Jwt parse = Jwts.parserBuilder()
                 .setSigningKey(SIGN_KEY)
                 .build()
                 .parse(token);
-        final JsonElement element = gson.fromJson(parse.getBody().toString(), JsonElement.class);
-        return element.getAsJsonObject().get("sub").getAsJsonObject().get("username").getAsString();
+        String body = parse.getBody().toString();
+        return GSON.fromJson(body, JsonElement.class)
+                .getAsJsonObject()
+                .get("sub")
+                .getAsJsonObject()
+                .get("username")
+                .getAsString();
     }
 }
