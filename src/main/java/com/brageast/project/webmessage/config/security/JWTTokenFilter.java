@@ -1,6 +1,5 @@
 package com.brageast.project.webmessage.config.security;
 
-import com.brageast.project.webmessage.service.UserService;
 import com.brageast.project.webmessage.util.JwtUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -20,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
+@Deprecated
 public class JWTTokenFilter extends BasicAuthenticationFilter {
 
     private static final Logger log = LoggerFactory.getLogger(JWTTokenFilter.class);

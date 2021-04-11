@@ -1,8 +1,9 @@
 import axios from "axios";
 import router from "@/router";
 import { message } from "ant-design-vue";
+import { watch } from "vue";
 
-export const TOKE_NAME = 'Token';
+// export const TOKE_NAME = 'Token';
 export let axiosInstance = createAxios();
 
 function createAxios(config) {
@@ -35,21 +36,46 @@ function notEmpty(method, ...parameters) {
  * 用户登录操作
  * @param username 用户名
  * @param password 密码
+ * @param isRememberMe 是否记录
  * @returns {Promise<AxiosResponse<any>>}
  */
-export function login(username, password) {
+export function login(username, password, isRememberMe = true) {
     notEmpty('login', username, password);
-    return axiosInstance.post('/login', {
+    const data = {
         username,
         password,
+    }
+    if (isRememberMe) {
+        data["remember-me"] = 'on';
+    }
+    return axiosInstance({
+        method: 'post',
+        url: '/login',
+        data,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        transformRequest: [
+            function (data) {
+                return stringify(data)
+            },
+        ]
     }).then(({ data }) => {
-        if (data && data.code === 200) {
-            localStorage.setItem(TOKE_NAME, data.data);
-            axiosInstance.defaults.headers['Authorization'] = 'Bearer ' + data.data;
-        }
+        // if (data && data.code === 200) {
+        // }
         return data;
-    })
+    });
 }
+
+function stringify(data) {
+    let ret = ''
+    for (const it in data) {
+        ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+    }
+    ret = ret.substring(0, ret.lastIndexOf('&'))
+    return ret
+}
+
 
 export function register(username, password, email) {
     notEmpty('register', username, password, email);
@@ -60,26 +86,77 @@ export function register(username, password, email) {
     })
 }
 
+const urls = [ '/login', '/register' ];
+
+function goLink(router, link, text) {
+    router.push(link);
+    message.error({ content: text, key: 'GO_LINK', duration: 2 });
+}
+
+function watchRoute(globalVueLib, immediate = false) {
+    const { $store , $router } = globalVueLib;
+    return watch(() => globalVueLib.$route, (to) => {
+        if (!to) {
+            return;
+        }
+        const { isLogin } = $store.state;
+        if (urls.indexOf(to.path) === -1) {
+            if (!isLogin) {
+                goLink($router, '/login', '您未登录自动为您跳转登录页面');
+            }
+        } else {
+            if (isLogin) {
+                goLink($router, '/', '您已经登录, 如果访问请先退出登录');
+            }
+        }
+    }, {
+        immediate
+    });
+}
+
+let unWatchRoute;
+
 export default {
     install(Vue) {
         const { globalProperties } = Vue.config
         globalProperties.$http = axiosInstance;
         window.axios = axiosInstance;
-        const token = localStorage.getItem(TOKE_NAME);
-        if (token && token.length > 0) {
-            axiosInstance.defaults.headers['Authorization'] = 'Bearer ' + token;
-            const { $store } = globalProperties;
-            $store.commit('setLogin', true)
-            $store.dispatch('updateUserInfo')
-                .then(status => {
-                    if (!status) {
-                        $store.commit('setLogin', false)
-                    }
-                })
-                .catch(err => {
-                    $store.commit('setLogin', false)
-                    console.log(err)
-                });
-        }
+        const { $store, $router } = globalProperties;
+
+        // NOTE: 不需要检验Token格式了
+        $store.dispatch('updateUserInfo')
+            .then(status => {
+                unWatchRoute && unWatchRoute();
+                if (status) {
+                    unWatchRoute = watchRoute(globalProperties, true)
+                } else {
+                    goLink($router, '/login', '您未登录自动为您跳转登录页面');
+                    unWatchRoute = watchRoute(globalProperties)
+                }
+            })
+            .catch(err => {
+                console.log(err)
+                unWatchRoute && unWatchRoute();
+                goLink(router, '/login', '您未登录自动为您跳转登录页面');
+                unWatchRoute = watchRoute(globalProperties)
+            })
+
+
+        // const token = localStorage.getItem(TOKE_NAME);
+        // if (token && token.length > 0) {
+        //     axiosInstance.defaults.headers['Authorization'] = 'Bearer ' + token;
+        //     const { $store } = globalProperties;
+        //     $store.commit('setLogin', true)
+        //     $store.dispatch('updateUserInfo')
+        //         .then(status => {
+        //             if (!status) {
+        //                 $store.commit('setLogin', false)
+        //             }
+        //         })
+        //         .catch(err => {
+        //             $store.commit('setLogin', false)
+        //             console.log(err)
+        //         });
+        // }
     }
 };

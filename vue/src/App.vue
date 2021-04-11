@@ -4,29 +4,11 @@
   </a-config-provider>
 </template>
 <script>
-import { message } from "ant-design-vue";
 import { mapState } from "vuex";
-
-const urls = [ '/login', '/register' ];
 
 export default {
   name: 'App',
   watch: {
-    '$route': {
-      handler(to) {
-        const { isLogin, goLink } = this;
-
-        if (urls.indexOf(to.path) === -1) {
-          if (!isLogin) {
-            goLink('/login', '您未登录自动为您跳转登录页面');
-          }
-        } else {
-          if (isLogin) {
-            goLink('/', '您已经登录, 如果访问请先退出登录');
-          }
-        }
-      }
-    },
     isLogin: {
       immediate: true,
       handler(nVal) {
@@ -38,10 +20,6 @@ export default {
     ...mapState([ 'isLogin' ])
   },
   methods: {
-    goLink(link, text) {
-      this.$router.push(link);
-      message.error({ content: text, key: 'GO_LINK', duration: 2 });
-    },
     getPopupContainer(el, dialogContext) {
       if (dialogContext) {
         return dialogContext.getDialogWrap();

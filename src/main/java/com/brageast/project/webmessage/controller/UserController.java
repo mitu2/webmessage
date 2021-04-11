@@ -25,7 +25,7 @@ public class UserController {
     private final CustomizeUserDetailsService userDetailsService;
 
     @Transactional
-    @GetMapping(path = {"{username}", "/"})
+    @GetMapping(path = {"{username}", ""})
     ResponseMessage<UserDetails> getUserTableByUsername(@PathVariable(required = false) String username) {
         final UserDetails userDetails;
         if (username == null) {

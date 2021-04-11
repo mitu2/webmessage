@@ -1,6 +1,5 @@
 import { ref, watch } from "vue";
 import { message } from "ant-design-vue";
-import { TOKE_NAME } from "@/util/request";
 
 function getPort() {
     return location.port === '8090' ? '8080' : location.port;
@@ -39,8 +38,7 @@ class WebSocketUtil {
 
     create(url = this.url, defaultSendObj) {
         this.close()
-        const token = localStorage.getItem(TOKE_NAME);
-        const webSocket = new WebSocket(`${ url }?token=${ token }`);
+        const webSocket = new WebSocket(url);
         this.#status.value = 'CREATE';
         webSocket.onopen = () => {
             this.#status.value = 'OK';

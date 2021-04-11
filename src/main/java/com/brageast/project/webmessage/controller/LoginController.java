@@ -36,11 +36,11 @@ public class LoginController {
         return "index";
     }
 
-    @PostMapping(path = "login")
-    @ResponseBody
-    ResponseMessage<String> login(@RequestBody UserEntity user) {
-        final String token = userService.doLogin(user);
-        return ResponseMessage.ok(token);
-    }
+//    @PostMapping(path = "login")
+//    @ResponseBody
+//    ResponseMessage<String> login(@RequestBody UserEntity user) {
+//        final String token = userService.doLogin(user);
+//        return ResponseMessage.ok(token);
+//    }
 
 }

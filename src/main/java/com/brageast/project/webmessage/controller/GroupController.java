@@ -1,5 +1,6 @@
 package com.brageast.project.webmessage.controller;
 
+import com.brageast.project.webmessage.pojo.ResponseMessage;
 import com.brageast.project.webmessage.pojo.table.GroupRefTable;
 import com.brageast.project.webmessage.pojo.table.GroupTable;
 import com.brageast.project.webmessage.service.GroupService;
@@ -18,13 +19,13 @@ public class GroupController {
     private final GroupService groupService;
 
     @PostMapping(path = "/getGroupInGroupIds")
-    List<GroupTable> getGroupInGroupIds(@RequestBody Set<Long> ids) {
-        return groupService.getGroupInGroupIds(ids);
+    ResponseMessage<List<GroupTable>> getGroupInGroupIds(@RequestBody Set<Long> ids) {
+        return ResponseMessage.ok(groupService.getGroupInGroupIds(ids));
     }
 
     @GetMapping(path = "getGroupRefByUserId")
-    List<GroupRefTable> getGroupRefByUserId(@RequestParam(name = "userId") Long userId) {
-        return groupService.getGroupRefByUserId(userId);
+    ResponseMessage<List<GroupRefTable>> getGroupRefByUserId(@RequestParam(name = "userId") Long userId) {
+        return ResponseMessage.ok(groupService.getGroupRefByUserId(userId));
     }
 
 

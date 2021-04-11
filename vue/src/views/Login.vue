@@ -21,7 +21,6 @@
         </a-input>
       </a-form-item>
       <a-form-item class="wm-input">
-
         <a-button
             type="primary"
             html-type="submit"
@@ -47,8 +46,9 @@ export default {
   data() {
     return {
       form: {
-        username: 'admin',
-        password: 'admin',
+        username: 'admin',    // 用户名
+        password: 'admin',    // 密码
+        isRememberMe: true    // 是否记住我 (默认启用, 暂无表单控制, 至于为甚吗? 懒)
       }
     }
   },
@@ -60,10 +60,10 @@ export default {
       this.doLogin();
     },
     doLogin() {
-      const key = 'LOGIN';
+      const key = 'LOGIN_KEY';
       message.loading({ content: '发送请求中...', key });
-      const { username, password } = this.form;
-      login(username, password)
+      const { username, password, isRememberMe } = this.form;
+      login(username, password, isRememberMe)
           .then(() => {
             this.$store.dispatch('updateUserInfo')
                 .then(bol => {
@@ -81,6 +81,7 @@ export default {
                 })
           })
           .catch(err => {
+            console.log(err)
             message.error({ content: '登录失败, 原因为: ' + err, key, duration: 2 });
           })
     },
