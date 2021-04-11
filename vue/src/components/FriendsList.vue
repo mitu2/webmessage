@@ -13,12 +13,7 @@ export default {
     }
   },
   mounted() {
-    if (this.$store.state.isLogin) {
-      this.$http.get('/rest/users?size=100')
-          .then(({ data }) => {
-            this.users = data['_embedded'].userTables;
-          });
-    }
+
   }
 }
 </script>

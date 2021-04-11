@@ -13,17 +13,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
+@RequestMapping(path = "api/user")
 public class UserController {
 
     private final CustomizeUserDetailsService userDetailsService;
 
     @Transactional
-    @GetMapping(path = {"user/{username}", "user"})
+    @GetMapping(path = {"{username}", "/"})
     ResponseMessage<UserDetails> getUserTableByUsername(@PathVariable(required = false) String username) {
         final UserDetails userDetails;
         if (username == null) {

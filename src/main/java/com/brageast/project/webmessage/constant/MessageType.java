@@ -1,7 +1,6 @@
 package com.brageast.project.webmessage.constant;
 
 public enum MessageType {
-
     TEXT,
     ERROR,
     INFO,

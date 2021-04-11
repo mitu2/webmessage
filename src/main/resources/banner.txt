@@ -1,0 +1,10 @@
+
+${AnsiBackground.BLACK}${AnsiColor.BRIGHT_WHITE}|—————————————————————————————————————————————|  Spring-boot Version: ${spring-boot.version}
+|               ${AnsiColor.BRIGHT_CYAN}Project Name${AnsiColor.BRIGHT_WHITE}                  |  Author: Chenmoad
+|                                             |  Gmail: chenmoand@outlook.com
+|           ${AnsiStyle.BOLD}WebMessage  简单网页通信项目${AnsiStyle.FAINT}${AnsiColor.BRIGHT_WHITE}         |  Git Repository:
+|                                             |      Gitee: https://gitee.com/chenmoand/webmessage
+|                                             |      GitHub: https://github.com/mitu2/webmesage
+|             ${AnsiColor.BRIGHT_RED}快来一碗骚气的心肝拌面${AnsiColor.BRIGHT_WHITE}              |
+|—————————————————————————————————————————————|
+${AnsiStyle.NORMAL}

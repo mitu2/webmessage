@@ -1,7 +1,8 @@
 import { axiosInstance } from "@/util/request";
 
-export function updateUserInfo({ commit }) {
-    return axiosInstance.get('/user')
+export function updateUserInfo(store) {
+    const { commit } = store;
+    return axiosInstance.get('/api/user')
         .then(({ data }) => {
             const bol = data.code === 200 && data.data.enabled;
             if (bol) {
@@ -10,4 +11,8 @@ export function updateUserInfo({ commit }) {
             }
             return bol
         })
+}
+
+export function getUserRefGroup(store) {
+
 }

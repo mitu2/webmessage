@@ -2,11 +2,9 @@ package com.brageast.project.webmessage.util;
 
 import com.brageast.project.webmessage.config.security.CustomizeUserDetails;
 import com.brageast.project.webmessage.pojo.User;
-import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.websocket.Session;
 
@@ -21,7 +19,6 @@ public class WebSocketUtils {
     }
 
     private WebSocketUtils() {
-
     }
 
     public static User getUser(Session session) {

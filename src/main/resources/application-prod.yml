@@ -1,3 +1,5 @@
+default-user:
+  enabled: false
 server:
   port: 80
   compression:
