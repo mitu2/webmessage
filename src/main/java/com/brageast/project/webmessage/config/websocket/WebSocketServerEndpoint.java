@@ -3,23 +3,19 @@ package com.brageast.project.webmessage.config.websocket;
 import com.brageast.project.webmessage.constant.MessageType;
 import com.brageast.project.webmessage.pojo.User;
 import com.brageast.project.webmessage.pojo.WebSocketMessage;
-import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.util.WebSocketUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
-import javax.websocket.server.ServerEndpoint;
 import java.util.Objects;
 
 import static com.brageast.project.webmessage.util.WebSocketUtils.sendObject;
 
 @Slf4j
-@Component
-@ServerEndpoint(value = "/websocket")
+//@Component
+//@ServerEndpoint(value = "/websocket")
 @Deprecated
 public class WebSocketServerEndpoint {
 
@@ -71,7 +67,8 @@ public class WebSocketServerEndpoint {
         }
         final User recipient = recipientMessage.getRecipient();
         final WebSocketMessage senderMessage = recipientMessage.to(WebSocketUtils.getUser(session));
-        /*label:*/ switch (recipientMessage.getType()) {
+        /*label:*/
+        switch (recipientMessage.getType()) {
             case ALL_USER:
                 senderMessage.setType(MessageType.TEXT);
                 for (Session openSession : session.getOpenSessions()) {

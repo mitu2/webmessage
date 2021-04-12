@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 
 import javax.websocket.Session;
 
+@Deprecated
 public class WebSocketUtils {
 
     public static final ObjectMapper MAPPER;

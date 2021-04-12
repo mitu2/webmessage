@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Deprecated
 public class WebSocketMessage {
 
     private User recipient;
