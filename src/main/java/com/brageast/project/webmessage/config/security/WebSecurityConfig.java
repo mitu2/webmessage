@@ -56,7 +56,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * 查看persistent_logins表是否在Mysql中存在
-     *
      */
     private static final String CHECK_TABLE_SQL = "SELECT table_name FROM information_schema.TABLES WHERE table_name ='persistent_logins';";
 
@@ -86,19 +85,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         encoders.put("scrypt", new SCryptPasswordEncoder());
         encoders.put("sha256", new StandardPasswordEncoder());
         return new DelegatingPasswordEncoder(idForEncode, encoders);
-    }
-
-    @Bean
-    @Profile("dev")
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOriginPattern("*"); //修改为添加而不是设置，* 最好改为实际的需要，我这是非生产配置，所以粗暴了一点
-        configuration.addAllowedMethod("*");        //修改为添加而不是设置
-        configuration.addAllowedHeader("*");        //这里很重要，起码需要允许 Access-Control-Allow-Origin
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 
     @Override
@@ -167,7 +153,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests(ar -> {
             ar
-                    .antMatchers("/static/**")
+                    .antMatchers("/static/**", "/web-socket/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated();

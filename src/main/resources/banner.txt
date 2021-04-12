@@ -4,7 +4,7 @@ ${AnsiBackground.BLACK}${AnsiColor.BRIGHT_WHITE}|——————————�
 |                                             |  Gmail: chenmoand@outlook.com
 |           ${AnsiStyle.BOLD}WebMessage  简单网页通信项目${AnsiStyle.FAINT}${AnsiColor.BRIGHT_WHITE}         |  Git Repository:
 |                                             |      Gitee: https://gitee.com/chenmoand/webmessage
-|                                             |      GitHub: https://github.com/mitu2/webmesage
+|                                             |      GitHub: https://github.com/mitu2/webmessage
 |             ${AnsiColor.BRIGHT_RED}快来一碗骚气的心肝拌面${AnsiColor.BRIGHT_WHITE}              |
 |—————————————————————————————————————————————|
 ${AnsiStyle.NORMAL}

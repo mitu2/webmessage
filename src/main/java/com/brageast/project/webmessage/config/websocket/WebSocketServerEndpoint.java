@@ -20,14 +20,10 @@ import static com.brageast.project.webmessage.util.WebSocketUtils.sendObject;
 @Slf4j
 @Component
 @ServerEndpoint(value = "/websocket")
+@Deprecated
 public class WebSocketServerEndpoint {
 
-    final ObjectMapper mapper;
-
-    @Autowired
-    public WebSocketServerEndpoint() {
-        mapper = WebSocketUtils.MAPPER;
-    }
+    final ObjectMapper mapper = WebSocketUtils.MAPPER;
 
     @OnOpen
     public void onOpen(Session session, EndpointConfig config) {

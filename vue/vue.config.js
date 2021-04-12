@@ -24,7 +24,17 @@ module.exports = {
     // },
     productionSourceMap: false,
     devServer: {
-        proxy: 'http://localhost:8080',
+        proxy: {
+            '/api': {
+                target: 'http://localhost:8080',
+                changeOrigin: true
+            },
+            '/web-socket': {
+                target: 'http://localhost:8080',
+                ws: true,
+                changeOrigin: true
+            },
+        },
         port: 8090
     },
 }
