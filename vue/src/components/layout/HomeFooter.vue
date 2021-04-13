@@ -32,7 +32,7 @@ export default {
       }
 
       this.$wsocket.sendObject({
-        type: 'ALL_USER',
+        type: 'Broadcast',
         data: senderMessage
       });
       this.senderMessage = '';

@@ -1,5 +1,6 @@
 package com.brageast.project.webmessage.config.websocket;
 
+import com.brageast.project.webmessage.websocket.SimpleWebSocketHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +9,6 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.SockJsServiceRegistration;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
-
-import java.lang.reflect.Method;
 
 @EnableWebSocket
 @Configuration

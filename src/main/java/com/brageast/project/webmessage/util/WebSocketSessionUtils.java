@@ -31,7 +31,7 @@ public class WebSocketSessionUtils {
      * @param session WebSocket会话
      * @return 用户认证信息
      */
-    public static User getSessionUser(WebSocketSession session) {
+    public static User getUser(WebSocketSession session) {
         Objects.requireNonNull(session, "session must not null!");
         if (session.isOpen() && session.getPrincipal() instanceof Authentication) {
             Authentication authentication = (Authentication) session.getPrincipal();

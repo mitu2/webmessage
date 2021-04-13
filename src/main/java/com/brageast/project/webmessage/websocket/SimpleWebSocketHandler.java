@@ -1,4 +1,4 @@
-package com.brageast.project.webmessage.config.websocket;
+package com.brageast.project.webmessage.websocket;
 
 import com.brageast.project.webmessage.util.WebSocketSessionUtils;
 import lombok.RequiredArgsConstructor;
@@ -11,26 +11,37 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class SimpleWebSocketHandler extends AbstractWebSocketHandler {
 
-    public static final Set<WebSocketSession> WEB_SOCKET_SESSIONS = Collections.synchronizedSet(new HashSet<>());
+    private final List<MessageAdapter> adapters;
+
 
     @Override
     public void afterConnectionEstablished(@NotNull WebSocketSession session) throws Exception {
-        WEB_SOCKET_SESSIONS.add(session);
+        WebSocketContext.addSession(session);
     }
 
     @Override
     public void handleTextMessage(@NotNull WebSocketSession session, @NotNull TextMessage message) throws Exception {
-        Object object = WebSocketSessionUtils.messageToObject(message, Object.class);
+        Message.Sender sender;
+        try {
+            sender = WebSocketSessionUtils.messageToObject(message, Message.Sender.class);
+        } catch (IOException e) {
+            WebSocketSessionUtils.sendObject(session, new Message.Recipient(null, "ERROR", "请按照格式发送信息"));
+            return;
+        }
 
+        for (MessageAdapter adapter : adapters) {
+            if (adapter.types().contains(sender.getType())) {
+                adapter.doMessage(session, sender);
+            }
+        }
     }
 
     @Override
@@ -40,6 +51,7 @@ public class SimpleWebSocketHandler extends AbstractWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) throws Exception {
-        WEB_SOCKET_SESSIONS.remove(session);
+        WebSocketContext.removeSession(session);
+
     }
 }

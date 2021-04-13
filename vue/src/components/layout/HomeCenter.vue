@@ -18,7 +18,7 @@
 <!--    </a-list>-->
     <div class="message" v-for="(msg, ind) of messages" :key="ind">
       <div class="sender-name">
-        用户: {{ msg.sender.username }}
+        用户: {{ msg.sid }}
       </div>
       <div class="sender-content">
         内容: {{ msg.data }}
