@@ -1,14 +1,7 @@
 package com.brageast.project.webmessage.constant;
 
-public enum MessageType {
-    TEXT,
-    ERROR,
-    INFO,
-    ALL_USER,
-    OTHER;
+public interface MessageType {
 
-    @Override
-    public String toString() {
-        return this.name();
-    }
+    String BROADCAST = "Broadcast";
+
 }

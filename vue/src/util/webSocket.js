@@ -2,10 +2,6 @@ import { ref, watch } from "vue";
 import { message } from "ant-design-vue";
 import SockJS from "sockjs-client";
 
-// function getPort() {
-//     return location.port === '8090' ? '8080' : location.port;
-// }
-
 class WebSocketUtil {
 
     #webSocket;

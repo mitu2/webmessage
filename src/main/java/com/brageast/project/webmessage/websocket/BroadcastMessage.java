@@ -1,5 +1,6 @@
 package com.brageast.project.webmessage.websocket;
 
+import com.brageast.project.webmessage.constant.MessageType;
 import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.util.WebSocketSessionUtils;
 import org.springframework.stereotype.Component;
@@ -13,14 +14,14 @@ import java.util.Set;
 @Component
 public class BroadcastMessage implements MessageAdapter {
 
-    private static final Set<String> TYPES = Collections.singleton("Broadcast");
+    private static final Set<String> TYPES = Collections.singleton(MessageType.BROADCAST);
 
 
     @Override
     public void doMessage(WebSocketSession session, Message.Sender senderMessage) throws IOException {
         UserTable userTable = (UserTable) Objects.requireNonNull(WebSocketSessionUtils.getUser(session));
         for (WebSocketSession socketSession : WebSocketContext.getOnlineSessions()) {
-            WebSocketSessionUtils.sendObject(socketSession, new Message.Recipient(userTable.getId(), "TEXT", senderMessage.getData()));
+            WebSocketSessionUtils.sendObject(socketSession, new Message.Recipient(userTable.getId(), MessageType.BROADCAST, senderMessage.getData()));
         }
     }
 

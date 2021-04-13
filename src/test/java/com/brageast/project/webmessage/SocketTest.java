@@ -1,10 +1,6 @@
 package com.brageast.project.webmessage;
 
-import com.brageast.project.webmessage.constant.MessageType;
-import com.brageast.project.webmessage.pojo.WebSocketMessage;
-import com.brageast.project.webmessage.util.WebSocketUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
@@ -46,12 +42,8 @@ public class SocketTest {
 
     @Test
     void messageTypeTest() throws JsonProcessingException {
-        ObjectMapper mapper = WebSocketUtils.MAPPER;
-        final String s = MessageType.TEXT.toString();
-        log.info(s);
-        log.info(mapper.writeValueAsString(new WebSocketMessage()));
-    }
 
+    }
 
 
 }
