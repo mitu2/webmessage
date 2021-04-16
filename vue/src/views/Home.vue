@@ -1,16 +1,16 @@
 <template>
   <div class="home">
-    <use-antd-layout/>
+    <use-style-layout />
   </div>
 </template>
 
 <script>
-import UseAntdLayout from "@/components/layout/UseAntdLayout";
 
+import UseStyleLayout from "@/components/layout/UseStyleLayout";
 export default {
   name: 'Home',
   components: {
-    UseAntdLayout
+    UseStyleLayout
   },
 }
 </script>

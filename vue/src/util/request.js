@@ -3,7 +3,6 @@ import router from "@/router";
 import { message } from "ant-design-vue";
 import { watch } from "vue";
 
-// export const TOKE_NAME = 'Token';
 export let axiosInstance = createAxios();
 
 function createAxios(config) {
@@ -60,10 +59,6 @@ export function login(username, password, isRememberMe = true) {
                 return stringify(data)
             },
         ]
-    }).then(({ data }) => {
-        // if (data && data.code === 200) {
-        // }
-        return data;
     });
 }
 
@@ -140,23 +135,5 @@ export default {
                 goLink(router, '/login', '您未登录自动为您跳转登录页面');
                 unWatchRoute = watchRoute(globalProperties)
             })
-
-
-        // const token = localStorage.getItem(TOKE_NAME);
-        // if (token && token.length > 0) {
-        //     axiosInstance.defaults.headers['Authorization'] = 'Bearer ' + token;
-        //     const { $store } = globalProperties;
-        //     $store.commit('setLogin', true)
-        //     $store.dispatch('updateUserInfo')
-        //         .then(status => {
-        //             if (!status) {
-        //                 $store.commit('setLogin', false)
-        //             }
-        //         })
-        //         .catch(err => {
-        //             $store.commit('setLogin', false)
-        //             console.log(err)
-        //         });
-        // }
     }
 };

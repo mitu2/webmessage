@@ -1,52 +1,67 @@
 <template>
-  <div class="home-center">
-<!--    <a-list item-layout="horizontal" :data-source="messages" class="list-height">-->
-<!--      <template #renderItem="{ item }">-->
-<!--        <a-list-item>-->
-<!--          <a-list-item-meta-->
-<!--              :description="item.data"-->
-<!--          >-->
-<!--            <template #title>-->
-<!--              <a href="#">{{ item.sender.username }}</a>-->
-<!--            </template>-->
-<!--            <template #avatar>-->
-<!--              <a-avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>-->
-<!--            </template>-->
-<!--          </a-list-item-meta>-->
-<!--        </a-list-item>-->
-<!--      </template>-->
-<!--    </a-list>-->
-    <div class="message" v-for="(msg, ind) of messages" :key="ind">
-      <div class="sender-name">
-        用户: {{ msg.sid }}
-      </div>
-      <div class="sender-content">
-        内容: {{ msg.data }}
-      </div>
+  <div class="user-title">
+    <div class="user-name">
+      天国基佬 （404）
+    </div>
+    <div class="not_use_btn">
+        - □ ⅹ
     </div>
   </div>
+<!--  <div class="message" v-for="(msg, ind) of messages" :key="ind">-->
+<!--    <div class="sender-name">-->
+<!--      用户: {{ msg.sid }}-->
+<!--    </div>-->
+<!--    <div class="sender-content">-->
+<!--      内容: {{ msg.data }}-->
+<!--    </div>-->
+<!--  </div>-->
+  <message-list />
+  <message-input />
 </template>
 
 <script>
+import MessageList from "@/components/MessageList";
+import MessageInput from "@/components/MessageInput";
 export default {
   name: "HomeCenter",
+  components: { MessageInput, MessageList },
   computed: {
     messages() {
-      return this.$wsocket.message;
+      return this.$wsocket.messages;
     }
   }
 }
 </script>
 
 <style scoped>
-.home-center {
-  color: black;
-  padding-top: 15px;
-  padding-left: 30px;
-  padding-right: 20px;
+.user-title {
+  user-select: none;
+  position: relative;
+  height: 10%;
+  width: 100%;
+  border-bottom: 1px solid #E7E7E7;
 }
-::v-deep .ant-list-items {
-  height: 460px !important;
-
+.user-name {
+  height: 30px;
+  width: 400px;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 30px;
+  bottom: 0;
+  color: black;
+  font-weight: 400;
+  font-family: "Microsoft YaHei", sans-serif;
+  font-size: 16px;
+  line-height: 30px;
+}
+.not_use_btn {
+  position: absolute;
+  right: 5px;
+  top: 0;
+  font-size: 16px;
+  color: #9D9D9D;
+  font-weight: bolder;
+  letter-spacing: 18px;
 }
 </style>

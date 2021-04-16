@@ -1,13 +1,13 @@
 <template>
-  <friends-list/>
+  <friend-list/>
 </template>
 
 <script>
-import FriendsList from "@/components/FriendsList";
+import FriendList from "@/components/FriendList";
 
 export default {
   name: "HomeSider",
-  components: { FriendsList },
+  components: { FriendList },
 }
 </script>
 

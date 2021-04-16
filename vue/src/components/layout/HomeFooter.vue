@@ -27,7 +27,7 @@ export default {
     submit() {
       const senderMessage = this.senderMessage;
       if (!senderMessage || senderMessage.replaceAll('\n', '').trim().length === 0) {
-        message.error({ content: '不要发空滴消息啊', key: 'SENDER_MESSAGE', duration: 3 })
+        message.error({ content: '请不要发送无效消息', key: 'SENDER_MESSAGE', duration: 3 })
         return;
       }
 

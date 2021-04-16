@@ -5,15 +5,15 @@ import SockJS from "sockjs-client";
 class WebSocketUtil {
 
     #webSocket;
-    #status = ref('NO_CREATE');
-    #message = ref([]);
+    #status = ref('CLOSE');
+    #messages = ref([]);
     #SEND_JSON_CACHE = [];
 
     constructor() {
     }
 
-    get message() {
-        return this.#message.value;
+    get messages() {
+        return this.#messages.value;
     }
 
     get status() {
@@ -21,7 +21,7 @@ class WebSocketUtil {
     }
 
     get isOk() {
-        return this.status === 'OK';
+        return this.status === 'RUN';
     }
 
     watchStatus(callback, options) {
@@ -29,15 +29,14 @@ class WebSocketUtil {
     }
 
     watchMessage(callback, options) {
-        return watch(this.#message, callback, options)
+        return watch(this.#messages, callback, options)
     }
 
     create(url = '/web-socket', defaultSendObj) {
         this.close()
         const webSocket = new SockJS(url);
-        this.#status.value = 'CREATE';
         webSocket.onopen = () => {
-            this.#status.value = 'OK';
+            this.#status.value = 'RUN';
             this.#webSocket = webSocket;
             this.#SEND_JSON_CACHE.forEach(json => {
                 this.#webSocket.send(json);
@@ -47,7 +46,6 @@ class WebSocketUtil {
         };
         webSocket.onclose = () => {
             this.#status.value = 'CLOSE';
-            // message.error({ content: "[WS] 链接断开", duration: 2 })
         }
         webSocket.onmessage = (ev) => {
             let msg;
@@ -63,7 +61,7 @@ class WebSocketUtil {
                         message.error({ content: msg.message, key: msg.message, duration: 3 });
                         break
                     case 'TEXT':
-                        this.#message.value.push(msg);
+                        this.#messages.value.push(msg);
                         break
                     case 'INFO':
                         console.log(`[ws]: ${ msg.data }`);

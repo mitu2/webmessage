@@ -49,7 +49,7 @@ body, #app {
 }
 
 #app {
-  background-image: url("./assets/background.jpg");
+  background-image: url("./assets/bc.jpg");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   font-family: "Microsoft YaHei", sans-serif;

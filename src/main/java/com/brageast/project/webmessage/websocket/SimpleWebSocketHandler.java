@@ -1,5 +1,6 @@
 package com.brageast.project.webmessage.websocket;
 
+import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.util.WebSocketSessionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,8 @@ import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Slf4j
 @Component
@@ -24,7 +27,21 @@ public class SimpleWebSocketHandler extends AbstractWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(@NotNull WebSocketSession session) throws Exception {
-        WebSocketContext.addSession(session);
+        try {
+            UserTable userTable = (UserTable) Objects.requireNonNull(WebSocketSessionUtils.getUser(session));
+            Set<WebSocketSession> sessions = WebSocketContext.getSessionByUserId(userTable.getId());
+            // 判断是否存在多个相同的用户
+            if (!sessions.isEmpty()) {
+                for (WebSocketSession ws : sessions) {
+                    WebSocketSessionUtils.sendObject(ws, new Message.Recipient(null, "USER_LOGINS", "异地登录账号"));
+                    WebSocketContext.removeSession(ws);
+                }
+            }
+        } catch (Exception ignored) {
+
+        } finally {
+            WebSocketContext.addSession(session);
+        }
     }
 
     @Override

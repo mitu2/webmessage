@@ -6,6 +6,8 @@ import com.brageast.project.webmessage.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -48,6 +50,8 @@ public class WebConfig implements WebMvcConfigurer {
     @ConditionalOnProperty(prefix = "default-user", value = "enabled")
     public static class InnerApplicationReadyListener implements ApplicationListener<ApplicationReadyEvent> {
 
+        private static final Logger logger = LoggerFactory.getLogger(InnerApplicationReadyListener.class);
+
         private final UserService userService;
 
         @Value("${default-user.username:admin}")
@@ -66,10 +70,10 @@ public class WebConfig implements WebMvcConfigurer {
         public void onApplicationEvent(@NotNull ApplicationReadyEvent event) {
             try {
                 userService.findUser(username);
-                log.info("已存在默认{}用户！", username);
+                logger.info("已存在默认{}用户！", username);
             } catch (UserNotFoundException e) {
                 userService.addUser(new UserEntity(username, password, email, null));
-                log.info("添加默认{}用户成功！", username);
+                logger.info("添加默认{}用户成功！", username);
             }
         }
     }

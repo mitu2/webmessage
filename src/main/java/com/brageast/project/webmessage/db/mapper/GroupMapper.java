@@ -9,7 +9,6 @@ import java.util.Set;
 @Mapper
 public interface GroupMapper {
 
-
     @Results(id = "GROUP_TABLE", value = {
             @Result(id = true, column = "id", property = "id"),
             @Result(column = "name", property = "name"),

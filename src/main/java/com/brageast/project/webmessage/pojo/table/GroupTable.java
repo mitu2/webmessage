@@ -1,5 +1,6 @@
 package com.brageast.project.webmessage.pojo.table;
 
+import com.brageast.project.webmessage.pojo.Group;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @Table(name = "user_group")
 @RequiredArgsConstructor
 @NoArgsConstructor
-public class GroupTable {
+public class GroupTable implements Group {
 
     @Id
     @Column(nullable = false, insertable = false, updatable = false)
