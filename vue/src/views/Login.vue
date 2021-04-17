@@ -39,7 +39,8 @@
 <script>
 import { LockOutlined, UserOutlined } from '@ant-design/icons-vue';
 import { login } from "@/util/request";
-import { message } from "ant-design-vue";
+
+const POPUP_KEY = 'LOGIN_KEY';
 
 export default {
   name: "Login",
@@ -60,29 +61,34 @@ export default {
       this.doLogin();
     },
     doLogin() {
-      const key = 'LOGIN_KEY';
-      message.loading({ content: '发送请求中...', key });
-      const { username, password, isRememberMe } = this.form;
+      const {
+        $message: {
+          success, error, loading
+        },
+        form: {
+          username, password, isRememberMe
+        },
+        $store, $router
+      } = this;
+      loading({ content: '发送请求中...', key: POPUP_KEY });
       login(username, password, isRememberMe)
           .then(() => {
-            this.$store.dispatch('updateUserInfo')
-                .then(bol => {
-                  if (bol) {
-                    message.success({ content: '登录成功, 正在跳转', key, duration: 2 });
-                    setTimeout(() => {
-                      this.$router.push('/')
-                    }, 2000)
+            $store.dispatch('updateUserConfig')
+                .then(cond => {
+                  if (cond) {
+                    success({ content: '登录成功, 正在跳转', key: POPUP_KEY, duration: 2 });
+                    $router.push('/')
                   } else {
-                    message.error({ content: '登录失败, 原因为: 获取用户信息失败', key, duration: 2 });
+                    error({ content: '登录失败, 原因为: 获取用户信息失败', key: POPUP_KEY, duration: 2 });
                   }
                 })
                 .catch(err => {
-                  message.error({ content: '登录失败, 原因为: ' + err, key, duration: 2 });
+                  error({ content: '登录失败, 原因为: ' + err, key: POPUP_KEY, duration: 2 });
                 })
           })
           .catch(err => {
             console.log(err)
-            message.error({ content: '登录失败, 原因为: ' + err, key, duration: 2 });
+            error({ content: '登录失败, 原因为: ' + err, key: POPUP_KEY, duration: 2 });
           })
     },
 

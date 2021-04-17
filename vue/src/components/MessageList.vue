@@ -1,7 +1,7 @@
 <template>
   <div class="message-list">
-    <div class="message-item" v-for="(message, ind) of messages" :key="ind">
-      <a-row v-if="message.type === 'RECIPIENT'">
+    <div class="message-item" v-for="(message, ind) of chatData" :key="ind">
+      <a-row v-if="message.chatType.toUpperCase() === 'RECIPIENT'">
         <a-col :span="2">
           <div class="user-avatar">
             <a-avatar shape="square" size="large"/>
@@ -9,14 +9,14 @@
         </a-col>
         <a-col :span="22">
           <div class="recipient">
-            <p>{{ message.text }}</p>
+            <p>{{ message.data }}</p>
           </div>
         </a-col>
       </a-row>
-      <a-row v-else-if="message.type === 'SENDER'">
+      <a-row v-else-if="message.chatType.toUpperCase() === 'SENDER'">
         <a-col :span="22">
           <div class="sender">
-            <p>{{ message.text }}</p>
+            <p>{{ message.data }}</p>
           </div>
         </a-col>
         <a-col :span="2">
@@ -30,21 +30,35 @@
 </template>
 
 <script>
+import { mapMutations, mapState } from "vuex";
+
 export default {
   name: "MessageList",
   data() {
-    return {
-      messages: [
-        { type: 'SENDER', text: '发送的消息哦' },
-        { type: 'RECIPIENT', text: '接受的消息哦!' },
-        { type: 'RECIPIENT', text: '猜猜我是谁？' },
-        { type: 'SENDER', text: '我管你是谁！' },
-        { type: 'SENDER', text: 'WDNMD！' },
-        { type: 'RECIPIENT', text: '我是哇哈哈哈哈哈哈哈哈哈哈' },
-        { type: 'SENDER', text: 'Project 施工中！' },
-        { type: 'RECIPIENT', text: 'Project 施工中' },
-      ]
+    return {}
+  },
+  computed: {
+    ...mapState([ 'chatConfig', 'chatCache' ]),
+    chatData() {
+      const { id, type } = this.chatConfig;
+      const key = type + '_' + id;
+      this.initChatCache(key);
+      return this.chatCache[key];
     }
+  },
+  methods: {
+    ...mapMutations([ 'initChatCache' ]),
+  },
+  mounted() {
+    const { id, type } = this.chatConfig;
+    const key = type + '_' + id;
+    this.initChatCache(key);
+    this._unf = this.$wsocket.addHandler('Broadcast', (msg) => {
+      this.chatCache[key].push(msg);
+    })
+  },
+  deactivated() {
+    this._unf = this._unf && this._unf()
   }
 }
 </script>

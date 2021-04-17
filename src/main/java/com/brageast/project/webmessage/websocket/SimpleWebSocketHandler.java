@@ -1,5 +1,6 @@
 package com.brageast.project.webmessage.websocket;
 
+import com.brageast.project.webmessage.constant.MessageType;
 import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.util.WebSocketSessionUtils;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,6 @@ public class SimpleWebSocketHandler extends AbstractWebSocketHandler {
 
     private final List<MessageAdapter> adapters;
 
-
     @Override
     public void afterConnectionEstablished(@NotNull WebSocketSession session) throws Exception {
         try {
@@ -33,7 +33,7 @@ public class SimpleWebSocketHandler extends AbstractWebSocketHandler {
             // 判断是否存在多个相同的用户
             if (!sessions.isEmpty()) {
                 for (WebSocketSession ws : sessions) {
-                    WebSocketSessionUtils.sendObject(ws, new Message.Recipient(null, "USER_LOGINS", "异地登录账号"));
+                    WebSocketSessionUtils.sendObject(ws, new Message.Error(MessageType.USER_LOGINS, "异地登录账号", null));
                     WebSocketContext.removeSession(ws);
                 }
             }
@@ -50,7 +50,7 @@ public class SimpleWebSocketHandler extends AbstractWebSocketHandler {
         try {
             sender = WebSocketSessionUtils.messageToObject(message, Message.Sender.class);
         } catch (IOException e) {
-            WebSocketSessionUtils.sendObject(session, new Message.Recipient(null, "ERROR", "请按照格式发送信息"));
+            WebSocketSessionUtils.sendObject(session, new Message.Error(MessageType.INCORRECT_FORMAT, "请按照格式发送信息", null));
             return;
         }
 

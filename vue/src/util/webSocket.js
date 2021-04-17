@@ -1,35 +1,19 @@
-import { ref, watch } from "vue";
-import { message } from "ant-design-vue";
+import { ref } from "vue";
 import SockJS from "sockjs-client";
 
 class WebSocketUtil {
 
     #webSocket;
     #status = ref('CLOSE');
-    #messages = ref([]);
+    #typeHandlers = {};
     #SEND_JSON_CACHE = [];
 
-    constructor() {
-    }
-
-    get messages() {
-        return this.#messages.value;
-    }
-
     get status() {
-        return this.#status.value;
+        return this.#status;
     }
 
     get isOk() {
-        return this.status === 'RUN';
-    }
-
-    watchStatus(callback, options) {
-        return watch(this.#status, callback, options)
-    }
-
-    watchMessage(callback, options) {
-        return watch(this.#messages, callback, options)
+        return this.#status.value === 'RUN';
     }
 
     create(url = '/web-socket', defaultSendObj) {
@@ -42,7 +26,7 @@ class WebSocketUtil {
                 this.#webSocket.send(json);
             })
             this.#SEND_JSON_CACHE = []
-            this.sendObject(defaultSendObj);
+            this.sendJSON(defaultSendObj);
         };
         webSocket.onclose = () => {
             this.#status.value = 'CLOSE';
@@ -55,27 +39,27 @@ class WebSocketUtil {
                 console.error(e)
                 return;
             }
-            if (msg.type) {
-                switch (msg.type) {
-                    case 'ERROR':
-                        message.error({ content: msg.message, key: msg.message, duration: 3 });
-                        break
-                    case 'TEXT':
-                        this.#messages.value.push(msg);
-                        break
-                    case 'INFO':
-                        console.log(`[ws]: ${ msg.data }`);
-                        break
-                    default:
-
-                }
+            const handlers = this.#typeHandlers[msg.type];
+            if (handlers && handlers.length > 0 && Array.isArray(handlers)) {
+                handlers.forEach(h => h(msg))
             }
-
-
         };
     }
 
-    sendObject(obj) {
+    addHandler(type, callback) {
+        if (!this.#typeHandlers[type]) {
+            this.#typeHandlers[type] = []
+        }
+        let enabled = true;
+        this.#typeHandlers[type].push((msg) => {
+            if (enabled) {
+                callback(msg);
+            }
+        })
+        return () => enabled = false;
+    }
+
+    sendJSON(obj) {
         if (!obj || obj.length === 0) {
             return;
         }
@@ -88,6 +72,7 @@ class WebSocketUtil {
 
     close() {
         if (this.isOk) {
+            this.#status.value = 'CLOSE';
             this.#webSocket.close();
         }
     }
@@ -98,7 +83,7 @@ class WebSocketUtil {
 
     static install(Vue) {
         const globalProperties = Vue.config.globalProperties;
-        globalProperties.$wsocket = new WebSocketUtil()
+        window.wsDebug = globalProperties.$wsocket = new WebSocketUtil()
     }
 }
 

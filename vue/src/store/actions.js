@@ -12,7 +12,3 @@ export function updateUserInfo(store) {
             return bol
         })
 }
-//
-// export function getUserRefGroup(store) {
-//
-// }

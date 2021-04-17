@@ -27,7 +27,7 @@ export default {
   components: { MessageInput, MessageList },
   computed: {
     messages() {
-      return this.$wsocket.messages;
+      return this.$wsocket.messages.value;
     }
   }
 }

@@ -29,14 +29,6 @@ module.exports = {
                 target: 'http://localhost:8080',
                 changeOrigin: true
             },
-            '/login': {
-                target: 'http://localhost:8080',
-                changeOrigin: true
-            },
-            '/register': {
-                target: 'http://localhost:8080',
-                changeOrigin: true
-            },
             '/web-socket': {
                 target: 'http://localhost:8080',
                 ws: true,

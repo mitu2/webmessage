@@ -31,7 +31,7 @@ export default {
         return;
       }
 
-      this.$wsocket.sendObject({
+      this.$wsocket.sendJSON({
         type: 'Broadcast',
         data: senderMessage
       });

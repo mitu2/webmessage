@@ -4,20 +4,20 @@
   </a-config-provider>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   name: 'App',
   watch: {
-    isLogin: {
+    isGuest: {
       immediate: true,
       handler(nVal) {
-       this.$wsocket[nVal ? 'create' : 'close']();
+        this.$wsocket[!nVal ? 'create' : 'close']();
       }
     }
   },
   computed: {
-    ...mapState([ 'isLogin' ])
+    ...mapGetters([ 'isGuest' ])
   },
   methods: {
     getPopupContainer(el, dialogContext) {

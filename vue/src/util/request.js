@@ -49,7 +49,7 @@ export function login(username, password, isRememberMe = true) {
     }
     return axiosInstance({
         method: 'post',
-        url: '/login',
+        url: '/api/login',
         data,
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -74,7 +74,7 @@ function stringify(data) {
 
 export function register(username, password, email) {
     notEmpty('register', username, password, email);
-    return axiosInstance.post('/register', {
+    return axiosInstance.post('/api/register', {
         username,
         password,
         email
@@ -94,13 +94,13 @@ function watchRoute(globalVueLib, immediate = false) {
         if (!to) {
             return;
         }
-        const { isLogin } = $store.state;
+        const { isGuest } = $store.getters;
         if (urls.indexOf(to.path) === -1) {
-            if (!isLogin) {
+            if (isGuest) {
                 goLink($router, '/login', '您未登录自动为您跳转登录页面');
             }
         } else {
-            if (isLogin) {
+            if (!isGuest) {
                 goLink($router, '/', '您已经登录, 如果访问请先退出登录');
             }
         }
@@ -119,7 +119,7 @@ export default {
         const { $store, $router } = globalProperties;
 
         // NOTE: 不需要检验Token格式了
-        $store.dispatch('updateUserInfo')
+        $store.dispatch('updateUserConfig')
             .then(status => {
                 unWatchRoute && unWatchRoute();
                 if (status) {

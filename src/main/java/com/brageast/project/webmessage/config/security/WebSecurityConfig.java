@@ -97,7 +97,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         }
 
         http.logout(logoutConfigurer -> {
-            logoutConfigurer.logoutUrl("/logout")
+            logoutConfigurer
+                    .logoutUrl("/logout")
                     .logoutSuccessHandler((request, response, authentication) -> {
                         response.setCharacterEncoding("utf-8");
                         response.setContentType("application/json;charset=utf-8");
@@ -111,6 +112,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin(loginConfigurer -> {
             loginConfigurer
                     .loginPage("/login")
+                    .loginProcessingUrl("/api/login")
                     .passwordParameter("password")
                     .usernameParameter("username")
                     .successHandler((request, response, authentication) -> {

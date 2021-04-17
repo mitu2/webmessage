@@ -16,12 +16,16 @@ public class BroadcastMessage implements MessageAdapter {
 
     private static final Set<String> TYPES = Collections.singleton(MessageType.BROADCAST);
 
-
     @Override
     public void doMessage(WebSocketSession session, Message.Sender senderMessage) throws IOException {
         UserTable userTable = (UserTable) Objects.requireNonNull(WebSocketSessionUtils.getUser(session));
+        Message.Recipient recipient = new Message.Recipient(userTable.getId(), MessageType.BROADCAST, senderMessage.getData(), senderMessage.getTimestamp());
         for (WebSocketSession socketSession : WebSocketContext.getOnlineSessions()) {
-            WebSocketSessionUtils.sendObject(socketSession, new Message.Recipient(userTable.getId(), MessageType.BROADCAST, senderMessage.getData()));
+            if (session == socketSession) {
+                // 啥也不做
+                continue;
+            }
+            WebSocketSessionUtils.sendObject(socketSession, recipient);
         }
     }
 
