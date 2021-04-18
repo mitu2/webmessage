@@ -1,5 +1,5 @@
 <template>
-  <div class="message-input" @keydown.ctrl.enter="submit">
+  <div class="message-input" @keydown.enter="submit">
     <div class="message-input-content">
       <a-textarea
           id="message-input-textarea"
@@ -7,7 +7,7 @@
       />
       <div class="message-input-btn-submit">
         <a-button @click="submit">
-          发送 (Ctrl + Enter)
+          发送 (Enter)
         </a-button>
       </div>
     </div>
@@ -26,7 +26,7 @@ export default {
     }
   },
   computed: {
-    ...mapState([ 'chatConfig', 'chatCache' ])
+    ...mapState([ 'chatConfig', 'chatCache', 'userConfig' ])
   },
   methods: {
     ...mapMutations([ 'initChatCache' ]),
@@ -40,13 +40,12 @@ export default {
       const key = type + '_' + id;
       this.initChatCache(key);
       const json = {
-        rid: id,
+        rid: this.userConfig.myselfId,
         type,
-        data: text,
+        data: { /* 会话ID */ cid: id, text } ,
         timestamp: Date.now()
       };
-      this.chatCache[key].push(Object.assign({ chatType: 'Sender' }, json))
-      console.log(this.chatCache)
+      this.chatCache[key].push(Object.assign({}, json, { chatType: 'Sender' },))
       this.$wsocket.sendJSON(json);
       this.text = '';
     }
@@ -76,5 +75,10 @@ export default {
   height: 135px;
   resize: none;
   border: none;
+}
+
+#message-input-textarea:focus {
+  outline: none !important;
+  box-shadow: none !important;
 }
 </style>

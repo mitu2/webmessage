@@ -4,7 +4,7 @@
       <home-buttons/>
     </div>
     <div class="layout-list inner">
-      <home-sider/>
+      <home-slider/>
     </div>
     <div class="layout-content inner">
       <home-center/>
@@ -14,12 +14,12 @@
 
 <script>
 import HomeCenter from "@/components/layout/HomeCenter";
-import HomeSider from "@/components/layout/HomeSider";
+import HomeSlider from "@/components/layout/HomeSlider";
 import HomeButtons from "@/components/layout/HomeButtons";
 
 export default {
   name: "UseStyleLayout",
-  components: { HomeButtons, HomeSider, HomeCenter }
+  components: { HomeButtons, HomeSlider, HomeCenter }
 }
 </script>
 
@@ -30,20 +30,24 @@ export default {
   width: 100%;
   height: 100%;
 }
+
 .layout-buttons {
   width: 8%;
   height: 100%;
 }
+
 .layout-list {
   width: 25%;
   height: 100%;
   background: #ede9e7;
 }
+
 .layout-content {
   width: 67%;
   height: 100%;
   background: #f4f4f4;
 }
+
 .inner {
   float: left;
 }

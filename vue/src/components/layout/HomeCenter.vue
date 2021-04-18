@@ -1,7 +1,7 @@
 <template>
   <div class="user-title">
     <div class="user-name">
-      天国基佬 （404）
+      {{ chatConfig.name }}
     </div>
     <div class="not_use_btn">
         - □ ⅹ
@@ -22,13 +22,14 @@
 <script>
 import MessageList from "@/components/MessageList";
 import MessageInput from "@/components/MessageInput";
+import { mapState } from "vuex";
+
+
 export default {
   name: "HomeCenter",
   components: { MessageInput, MessageList },
   computed: {
-    messages() {
-      return this.$wsocket.messages.value;
-    }
+    ...mapState(['chatConfig'])
   }
 }
 </script>

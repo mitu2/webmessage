@@ -1,8 +1,9 @@
 package com.brageast.project.webmessage.controller;
 
-import com.brageast.project.webmessage.config.security.CustomizeUserDetailsService;
+import com.brageast.project.webmessage.config.security.CustomizeUserDetails;
 import com.brageast.project.webmessage.exception.UserNotFoundException;
 import com.brageast.project.webmessage.pojo.ResponseMessage;
+import com.brageast.project.webmessage.pojo.table.UserTable;
 import com.brageast.project.webmessage.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,25 +23,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "api/user")
 public class UserController {
 
-    private final CustomizeUserDetailsService userDetailsService;
+    private final UserService userService;
 
     @Transactional
-    @GetMapping(path = {"{username}", ""})
-    ResponseMessage<UserDetails> getUserTableByUsername(@PathVariable(required = false) String username) {
-        final UserDetails userDetails;
-        if (username == null) {
-            userDetails = getCurrentUserDetails();
+    @GetMapping(path = {"{id}", ""})
+    ResponseMessage<UserTable> getUserTableById(@PathVariable(required = false) Long id) {
+        final UserTable table;
+        if (id == null) {
+            table = ((CustomizeUserDetails) getCurrentUserDetails()).getUserTable();
         } else {
-            userDetails = userDetailsService.loadUserByUsername(username);
+            table = userService.findUser(id);
         }
-        return ResponseMessage.ok(userDetails);
+        return ResponseMessage.ok(table);
     }
 
     private UserDetails getCurrentUserDetails() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         boolean isLogin = authentication != null && authentication.isAuthenticated();
         if (isLogin && authentication.getPrincipal() instanceof UserDetails) {
-            return (UserDetails) authentication.getPrincipal();
+            return (CustomizeUserDetails) authentication.getPrincipal();
         }
         throw new UserNotFoundException("未找到相关用户!");
     }

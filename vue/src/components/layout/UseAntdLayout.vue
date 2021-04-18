@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import HomeSider from "@/components/layout/HomeSider";
+import HomeSider from "@/components/layout/HomeSlider";
 import HomeFooter from "@/components/layout/HomeFooter";
 import HomeCenter from "@/components/layout/HomeCenter";
 
