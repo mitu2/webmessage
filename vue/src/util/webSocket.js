@@ -1,5 +1,6 @@
 import { ref } from "vue";
 import SockJS from "sockjs-client";
+import { message } from "ant-design-vue";
 
 class WebSocketUtil {
 
@@ -19,8 +20,9 @@ class WebSocketUtil {
     create(url = '/web-socket', defaultSendObj) {
         this.close()
         const webSocket = new SockJS(url);
+        this.#status.value = 'RUN';
         webSocket.onopen = () => {
-            this.#status.value = 'RUN';
+            message.success({ content: '服务器连接成功！', key: 'SERVER_SUCCESS' })
             this.#webSocket = webSocket;
             this.#SEND_JSON_CACHE.forEach(json => {
                 this.#webSocket.send(json);

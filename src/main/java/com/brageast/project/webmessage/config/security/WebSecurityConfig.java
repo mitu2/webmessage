@@ -147,15 +147,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             rm.tokenRepository(persistentTokenRepository())
                     .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(5L))
                     .userDetailsService(userDetailsService)
-                    .rememberMeParameter("remember-me")
-                    .useSecureCookie(true);
+                    .rememberMeParameter("remember-me");
         });
 
         http.csrf().disable();
 
         http.authorizeRequests(ar -> {
             ar
-                    .antMatchers("/static/**", "/web-socket/**")
+                    .antMatchers("/static/**", "/web-socket/**", "/api/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated();

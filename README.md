@@ -14,3 +14,7 @@
 * 修改application-dev.yml的Mysql相关配置
 * 然后在当前目录下运行 `cd vue && npm install && npm run build`
 * 继续在当前目录下运行`mvn spring-boot:start -DskipTests`
+
+## 项目demo地址
+
+http://chat.brageast.com:8080 可自行体验, 请自行注册账号不要用默认admin

@@ -5,6 +5,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
+import { watch } from "vue";
 
 export default {
   name: 'App',
@@ -29,11 +30,12 @@ export default {
     },
   },
   mounted() {
-    /** this.$wsocket.watchStatus((nVal) => {
-      if (nVal !== 'OK' && this.isLogin) {
+    watch(this.$wsocket.status, () => {
+      if (!(this.$wsocket.isOk || this.isGuest)) {
+        this.$message.warning({ content: '服务器已断开, 正在自动重连。。。', key: 'RETURN' })
         this.$wsocket.create();
       }
-    }) **/
+    });
   }
 }
 </script>

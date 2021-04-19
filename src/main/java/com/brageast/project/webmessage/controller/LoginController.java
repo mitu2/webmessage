@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @Controller
-@CrossOrigin
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class LoginController {
 
