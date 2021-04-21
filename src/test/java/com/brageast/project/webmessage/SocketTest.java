@@ -42,7 +42,9 @@ public class SocketTest {
 
     @Test
     void messageTypeTest() throws JsonProcessingException {
-
+        double d = 25 / 2;
+        System.out.println(d);
+        System.out.println(25d /2);
     }
 
 
