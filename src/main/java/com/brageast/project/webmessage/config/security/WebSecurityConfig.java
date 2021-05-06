@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -29,10 +30,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
-@Slf4j
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -50,34 +51,36 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * 查看persistent_logins表是否在Mysql中存在
      */
-    private static final String CHECK_TABLE_SQL = "SELECT table_name FROM information_schema.TABLES WHERE table_name ='persistent_logins';";
+    private static final String CHECK_INFORMATION_SCHEMA_TABLE_SQL = "SELECT table_name FROM information_schema.TABLES WHERE table_name ='persistent_logins';";
 
     @Bean
     PersistentTokenRepository persistentTokenRepository() {
         JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
         tokenRepository.setDataSource(dataSource);
-        Optional.ofNullable(tokenRepository.getJdbcTemplate())
-                .ifPresent(jdbcTemplate -> {
-                    List<String> query = jdbcTemplate.query(CHECK_TABLE_SQL, new BeanPropertyRowMapper<>(String.class));
-                    if (query.isEmpty()) {
-                        log.info("第一次为您创建persistent_logins表");
-                        tokenRepository.setCreateTableOnStartup(true);
-                    }
-                });
+        JdbcTemplate jdbcTemplate = tokenRepository.getJdbcTemplate();
+        if (jdbcTemplate != null) {
+            List<String> query = jdbcTemplate.query(CHECK_INFORMATION_SCHEMA_TABLE_SQL, new BeanPropertyRowMapper<>(String.class));
+            if (query.isEmpty()) {
+                log.info("第一次为您创建persistent_logins表");
+                tokenRepository.setCreateTableOnStartup(true);
+            }
+        }
         return tokenRepository;
     }
+
+
+    private static final String ID_FOR_ENCODE = "bcrypt";
 
     @Bean
     @SuppressWarnings("deprecation")
     PasswordEncoder passwordEncoder() {
-        String idForEncode = "bcrypt";
         Map<String, PasswordEncoder> encoders = new HashMap<>();
-        encoders.put(idForEncode, new BCryptPasswordEncoder());
+        encoders.put(ID_FOR_ENCODE, new BCryptPasswordEncoder());
         encoders.put("noop", NoOpPasswordEncoder.getInstance());
         encoders.put("pbkdf2", new Pbkdf2PasswordEncoder());
         encoders.put("scrypt", new SCryptPasswordEncoder());
         encoders.put("sha256", new StandardPasswordEncoder());
-        return new DelegatingPasswordEncoder(idForEncode, encoders);
+        return new DelegatingPasswordEncoder(ID_FOR_ENCODE, encoders);
     }
 
     @Override
@@ -145,19 +148,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable();
 
-        http.authorizeRequests(ar -> {
-            ar
-                    .antMatchers("/static/**", "/web-socket/**", "/api/**")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated();
-        });
-
-//        // 禁用请求头缓存
-//        http.headers(HeadersConfigurer::cacheControl);
-
-//        // 过滤器
-//        http.addFilter(new JWTTokenFilter(authenticationManagerBean(), userService));
+        http.authorizeRequests()
+                .antMatchers("/static/**", "/web-socket/**", "/api/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated();
     }
 
     @Bean(name = "myAuthenticationManager")
