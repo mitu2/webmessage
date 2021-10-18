@@ -34,6 +34,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
         }
         webSocketHandlerRegistration.setAllowedOrigins("http://webmessage.static.run", "http://static.run");
         SockJsServiceRegistration sockJS = webSocketHandlerRegistration
+                .setAllowedOrigins("http://webmessage.static.run", "http://static.run")
                 //NOTE: 似乎不让用通配符 * 而新版Spring也没开放setAllowedOriginPatterns使用权限
                 .withSockJS();
 //        Method method = sockJS.getClass().getDeclaredMethod("setAllowedOriginPatterns", String[].class);
