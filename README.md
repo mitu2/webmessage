@@ -10,11 +10,15 @@
 
 ## 使用方法
 
-* 拷贝项目 [Github](https://github.com/mitu2/webmessage) Or [Gitee](https://gitee.com/chenmoand/webmessage) 
+* 拷贝项目 [Github](https://github.com/mitu2/webmessage) 
 * 修改application-dev.yml的Mysql相关配置
+* 需要提前在mysql中创建好 `webmessage` Schema
 * 然后在当前目录下运行 `cd vue && npm install && npm run build`
 * 继续在当前目录下运行`mvn spring-boot:start -DskipTests`
 
-## 项目demo地址
+## 项目运行效果
 
-http://chat.brageast.com:8080 可自行体验, 请自行注册账号不要用默认admin
+* 登陆
+![登陆](img/login.png)
+* 首页
+![img.png](img/index.png)
